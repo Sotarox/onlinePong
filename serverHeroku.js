@@ -11,7 +11,7 @@ app.get('/forClient.css', function(req, res) {
   res.sendFile(__dirname + '/forClient.css');
 });
 http.listen(POST, function() {
-  console.log("Server is running on port 3333");
+  console.log("Pong Server started running");
 });
 
 ////Game
