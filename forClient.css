@@ -1,48 +1,68 @@
 * {
-  padding: 0;
-  margin: 0;
+    padding: 0;
+    margin: 0;
 }
 
 canvas {
-  background: #eee;
-  display: block;
-  margin: 0 auto;
+    background: #eee;
+    display: block;
+    margin: 0 auto;
 }
 
-.gameButtons {
-  margin: 0 auto;
-  width:470px;
-  height:20px;
-  padding:5px;
-  background: #333;
+.gameButtonsWrapper {
+    margin: 0 auto;
+    width: 470px;
+    height: 20px;
+    padding: 5px;
+    background: #333;
+    display: flex;
+    justify-content: center;
 }
-#btnStart{
-  font-family: 'Orbitron', sans-serif;
-}
-.form-inline {
-  font-family: 'Orbitron', sans-serif;
-  width:470px;
-  height:35px;
-  margin:2px;
-  padding:5px;
-  background-color:#888;
-}
-#sendButton{
+
+#btnStart {
     font-family: 'Orbitron', sans-serif;
+}
+
+.form-inline {
+    font-family: 'Orbitron', sans-serif;
+    width: 470px;
+    height: 35px;
+    margin: 2px;
+    padding: 5px;
+    background-color: #888;
+}
+
+#sendButton {
+    font-family: 'Orbitron', sans-serif;
+    font-size: x-small;
     display: inline-block;
     padding: 0.5em 1em;
     text-decoration: none;
-    background: #668ad8;/*button color*/
+    background: #668ad8;
+    /*button color*/
     color: #FFF;
     border-bottom: solid 3px #627295;
     border-radius: 2px;
 }
-#sendButton:active {/*when buttons are pressed*/
+
+#sendButton:active {
+    /*when buttons are pressed*/
     -ms-transform: translateY(4px);
     -webkit-transform: translateY(4px);
-    transform: translateY(4px);/*move down*/
-    border-bottom: none;/*vanish the underline*/
+    transform: translateY(4px);
+    /*move down*/
+    border-bottom: none;
+    /*vanish the underline*/
 }
-#systemMessage{
-  font-family: 'Press Start 2P', cursive;
+
+#systemMessage {
+    margin: auto;
+    width: 480px;
+    font-family: 'Press Start 2P', cursive;
+}
+
+#outerForm {
+    margin: auto;
+    width: 480px;
+    display: flex;
 }
