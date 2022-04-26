@@ -13,66 +13,71 @@
 </head>
 
 <body>
-
+    <!--entry form-->
+    <div id="enterModule">
+        <form id="enterForm">
+            <label class="roomLabel" for="rooms">Choose a Room:</label>
+            <select class="form-control" id="rooms">
+                <option value="room01">Room01</option>
+                <option value="room02">Room02</option>
+            </select>
+            <label class="nameLabel" for="msgForm">Name:</label>
+            <input type="text" class="form-control" id="msgForm">
+            <button type="submit" class="btn btn-primary" id="sendButton">Enter</button>
+        </form>
+    </div>
     <!--canvas and buttons(Start|Pause|Reset)-->
-    <div id="canvasButtons">
+    <div id="buttonsModule">
         <canvas id="myCanvas" width="480" height="540"></canvas>
         <div class="gameButtonsWrapper">
-            <input type="button" id="btnStart" value="Start" onclick="btnStart()" />
-            <input type="button" id="btnPause" disabled="disabled" value="Pause" onclick="btnPause()" />
-            <input type="button" id="btnReset" disabled="disabled" value="Reset" onclick="btnReset()" />
+            <input type="button" id="btnStart" class="gameButtons" value="Start" onclick="btnStart()" />
+            <input type="button" id="btnPause" class="gameButtons" disabled="disabled" value="Pause"
+                onclick="btnPause()" />
+            <input type="button" id="btnReset" class="gameButtons" disabled="disabled" value="Reset"
+                onclick="btnReset()" />
         </div>
     </div>
-    <!--entry form-->
-    <div id="outerForm">
-        <form class="form-inline">
+    <!-- chat form -->
+    <div id="chatModule" class="grayBox">
+        <form id="chatForm" class="form-inline">
             <div class="form-group">
-                <label class="roomLabel" for="rooms">Rooms：</label>
-                <select class="form-control" id="rooms">
-          <option value="room01">Room01</option>
-          <option value="room02">Room02</option>
-        </select>
-                <label class="nameLabel" for="msgForm">Name：</label>
-                <input type="text" class="form-control" id="msgForm">
-                <button type="submit" class="btn btn-primary" id="sendButton">Enter</button>
+                <label class="nameLabel" for="chatInput">Text:</label>
+                <input type="text" class="form-control" id="chatInput">
+                <button type="submit" class="btn btn-primary" id="chatButton">Send</button>
             </div>
         </form>
     </div>
 
-    <!--system and chat message for a winner-->
+    <!--system & chat message-->
     <div id="systemMessage"></div>
 
     <script>
-        document.getElementById("canvasButtons").style.display = "none";
-        var isEnter = false;
+        document.getElementById("buttonsModule").style.display = "none";
+        document.getElementById("chatModule").style.display = "none";
         var name = '';
         var chosenRoom = '';
 
-        function changeLabel() {
-            $(".nameLabel").text("Message：");
-            $("#rooms").prop("disabled", true);
-            $("button").text("send");
-            isEnter = true;
-        }
-        $("form").submit(function(e) {
-            var message = $("#msgForm").val();
+        $("#enterForm").submit(function (e) {
+            name = $("#msgForm").val() || "John Doe";
             chosenRoom = $("#rooms").val();
-            $("#msgForm").val('');
-            if (isEnter) {
-                message = name + ": " + message;
-                // send chat message
-                socket.emit("client_to_server_chat", {
-                    value: message
-                });
-            } else {
-                name = message;
-                socket.emit("client_to_server_join", {
-                    value: chosenRoom,
-                    clientName: message
-                });
-                changeLabel();
-            }
-            document.getElementById("canvasButtons").style.display = "block";
+            socket.emit("client_to_server_join", {
+                value: chosenRoom,
+                clientName: name
+            });
+            document.getElementById("buttonsModule").style.display = "block";
+            document.getElementById("chatModule").style.display = "block";
+            document.getElementById("enterModule").style.display = "none";
+            e.preventDefault();
+        });
+
+        $("#chatForm").submit(function (e) {
+            var message = $("#chatInput").val();
+            $("#chatInput").val('');
+            message = name + ": " + message;
+            // send chat message
+            socket.emit("client_to_server_chat", {
+                value: message
+            });
             e.preventDefault();
         });
 
@@ -193,7 +198,7 @@
             socket.emit("getCoordinates", {
                 value: chosenRoom
             });
-            socket.on('setCoordinates', function(data) {
+            socket.on('setCoordinates', function (data) {
                 ball1.positionX = data.positionX;
                 ball1.positionY = data.positionY;
                 paddle1.positionX = data.paddleX;
@@ -212,7 +217,7 @@
         }
 
         //Get playerNumber
-        socket.on('setPlayerNumber', function(data) {
+        socket.on('setPlayerNumber', function (data) {
             player.playerNumber = data.value;
         });
 
@@ -234,7 +239,7 @@
             }
             setTimeout(deleteCanvasMessage, 2000);
         }
-        socket.on('setStart', function(data) {
+        socket.on('setStart', function (data) {
             scoreBlue = data.scoreBlue;
             scoreRed = data.scoreRed;
             document.getElementById("btnStart").disabled = "disabled";
@@ -247,7 +252,7 @@
             socket.emit("getPause");
             canvasMessage = 'Pause';
         }
-        socket.on('setPause', function() {
+        socket.on('setPause', function () {
             document.getElementById("btnPause").disabled = "disabled";
             document.getElementById("btnStart").disabled = "";
         });
@@ -259,15 +264,15 @@
             canvasMessage = '';
         }
         //Receive System message from server
-        socket.on('showSystemMessage', function(data) {
+        socket.on('showSystemMessage', function (data) {
             $("#systemMessage").prepend("<div>" + data.value + "</div>");
         });
-        socket.on('showCanvasMessage', function(data) {
+        socket.on('showCanvasMessage', function (data) {
             console.log(data.value);
             canvasMessage = data.value;
         });
         //score
-        socket.on('renewScore', function(data) {
+        socket.on('renewScore', function (data) {
             scoreBlue = data.scoreBlue;
             scoreRed = data.scoreRed;
         });

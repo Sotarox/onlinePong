@@ -1,8 +1,3 @@
-* {
-    padding: 0;
-    margin: 0;
-}
-
 canvas {
     background: #eee;
     display: block;
@@ -19,7 +14,7 @@ canvas {
     justify-content: center;
 }
 
-#btnStart {
+input.gameButtons {
     font-family: 'Orbitron', sans-serif;
 }
 
@@ -34,8 +29,8 @@ canvas {
 
 #sendButton {
     font-family: 'Orbitron', sans-serif;
-    font-size: x-small;
-    display: inline-block;
+    font-size: small;
+    /* display: inline-block; */
     padding: 0.5em 1em;
     text-decoration: none;
     background: #668ad8;
@@ -43,6 +38,8 @@ canvas {
     color: #FFF;
     border-bottom: solid 3px #627295;
     border-radius: 2px;
+    margin-top: 10px;
+    width: 20%;
 }
 
 #sendButton:active {
@@ -55,13 +52,23 @@ canvas {
     /*vanish the underline*/
 }
 
+#enterForm {
+    font-family: 'Orbitron', sans-serif;
+    margin: auto;
+    padding: 10px;
+    width: 480px;
+    display: flex;
+    flex-direction: column;
+    background-color: #888;
+}
+
 #systemMessage {
     margin: auto;
     width: 480px;
     font-family: 'Press Start 2P', cursive;
 }
 
-#outerForm {
+div.grayBox {
     margin: auto;
     width: 480px;
     display: flex;
