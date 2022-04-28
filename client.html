@@ -27,7 +27,7 @@
         </form>
     </div>
     <!--canvas and buttons(Start|Pause|Reset)-->
-    <div id="buttonsModule">
+    <div id="gameModule">
         <canvas id="myCanvas" width="480" height="540"></canvas>
         <div class="gameButtonsWrapper">
             <input type="button" id="btnStart" class="gameButtons" value="Start" onclick="btnStart()" />
@@ -36,24 +36,20 @@
             <input type="button" id="btnReset" class="gameButtons" disabled="disabled" value="Reset"
                 onclick="btnReset()" />
         </div>
-    </div>
-    <!-- chat form -->
-    <div id="chatModule" class="grayBox">
-        <form id="chatForm" class="form-inline">
-            <div class="form-group">
+        <!-- chat form -->
+        <div class="grayBox">
+            <form id="chatForm" class="form-inline">
                 <label class="nameLabel" for="chatInput">Text:</label>
-                <input type="text" class="form-control" id="chatInput">
-                <button type="submit" class="btn btn-primary" id="chatButton">Send</button>
-            </div>
-        </form>
+                <input type="text" id="chatInputField" class="form-control">
+                <button type="submit" id="chatButton" class="btn btn-primary">Send</button>
+            </form>
+        </div>
+        <!--system & chat message-->
+        <div id="systemMessage"></div>
     </div>
-
-    <!--system & chat message-->
-    <div id="systemMessage"></div>
 
     <script>
-        document.getElementById("buttonsModule").style.display = "none";
-        document.getElementById("chatModule").style.display = "none";
+        document.getElementById("gameModule").style.display = "none";
         var name = '';
         var chosenRoom = '';
 
@@ -64,8 +60,7 @@
                 value: chosenRoom,
                 clientName: name
             });
-            document.getElementById("buttonsModule").style.display = "block";
-            document.getElementById("chatModule").style.display = "block";
+            document.getElementById("gameModule").style.display = "block";
             document.getElementById("enterModule").style.display = "none";
             e.preventDefault();
         });

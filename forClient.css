@@ -73,3 +73,7 @@ div.grayBox {
     width: 480px;
     display: flex;
 }
+
+#chatInputField {
+    width: 70%;
+}
