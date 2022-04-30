@@ -50,15 +50,15 @@
 
     <script>
         document.getElementById("gameModule").style.display = "none";
-        var name = '';
+        var userName = '';
         var chosenRoom = '';
 
         $("#enterForm").submit(function (e) {
-            name = $("#msgForm").val() || "John Doe";
+            userName = $("#msgForm").val() || "John Doe";
             chosenRoom = $("#rooms").val();
             socket.emit("client_to_server_join", {
                 value: chosenRoom,
-                clientName: name
+                clientName: userName
             });
             document.getElementById("gameModule").style.display = "block";
             document.getElementById("enterModule").style.display = "none";
@@ -68,7 +68,7 @@
         $("#chatForm").submit(function (e) {
             var message = $("#chatInput").val();
             $("#chatInput").val('');
-            message = name + ": " + message;
+            message = userName + ": " + message;
             // send chat message
             socket.emit("client_to_server_chat", {
                 value: message
@@ -83,7 +83,7 @@
 
         class Player {
             constructor() {
-                this.name = '';
+                this.userName = '';
                 this.playerNumber = '';
             }
         }
