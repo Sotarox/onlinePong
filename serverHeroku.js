@@ -1,7 +1,9 @@
 //Server basic functions
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+const path = require('path');
 var POST = process.env.PORT||8080;
 
 app.get('/', function(req, res) {
@@ -10,6 +12,8 @@ app.get('/', function(req, res) {
 app.get('/forClient.css', function(req, res) {
   res.sendFile(__dirname + '/forClient.css');
 });
+// Enable browser to access files under components folder
+app.use(express.static('components'));
 http.listen(POST, function() {
   console.log("Pong Server started running");
 });
