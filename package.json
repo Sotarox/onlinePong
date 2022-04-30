@@ -6,7 +6,7 @@
   "dependencies": {
     "express": "^4.18.1",
     "path": "^0.12.7",
-    "socket.io": "*"
+    "socket.io": "^2.4.0"
   },
   "scripts": {
     "start": "node serverHeroku.js"
