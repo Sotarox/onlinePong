@@ -7,21 +7,23 @@ https://onlinepong.herokuapp.com
 - Players in the same room can play and chat together. 
 - Smartphone and Tablet are currently not supported.
 
+## Dependencies
+- Node.js
+
 ## How to run in your local pc
-When you try to understand how does it work, download "serverLocal" folder to your pc.
+When you try to understand how does it work, clone this project by `git clone`.
 
-if you haven't yet installed NodeJS
-- install NodeJS
-
-Then do the following steps in command prompt/console
-- Move working directory to this "serverHeroku" folder
-    cd serverHeroku
-
-- install
-    npm install
-
+Then do the followings in a console:
+- Move working directory to "serverHeroku" folder
+```
+cd serverHeroku
+```
+- install dependencies
+```
+npm install
+```
 - run Node
-    node serverHeroku.js
-
-- open browser, type in url
-    localhost:8080
+```
+node serverHeroku.js
+```
+- open browser, type in url `localhost:8080`
