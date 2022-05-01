@@ -15,7 +15,7 @@ if you haven't yet installed NodeJS
 
 Then do the following steps in command prompt/console
 - Move working directory to this "serverHeroku" folder
-    cd 
+    cd serverHeroku
 
 - install
     npm install
@@ -24,4 +24,4 @@ Then do the following steps in command prompt/console
     node serverHeroku.js
 
 - open browser, type in url
-    localhost:3333
+    localhost:8080
