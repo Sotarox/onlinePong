@@ -1,4 +1,6 @@
 console.log("game.js");
+var socket = io();
+  
 document.getElementById("gameModule").style.display = "none";
 let userName = '';
 var chosenRoom = '';
@@ -7,7 +9,7 @@ $("#enterForm").submit(function (e) {
     userName = $("#msgForm").val() || "John Doe";
     chosenRoom = $("#rooms").val();
     socket.emit("client_to_server_join", {
-        value: chosenRoom,
+        room: chosenRoom,
         clientName: userName
     });
     document.getElementById("gameModule").style.display = "block";
@@ -26,7 +28,6 @@ $("#chatForm").submit(function (e) {
     e.preventDefault();
 });
 
-const socket = io(); //to communicate with server via socket.io
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 var canvasMessage = '';
