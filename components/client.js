@@ -1,4 +1,3 @@
-console.log("game.js");
 var socket = io();
   
 document.getElementById("gameModule").style.display = "none";
@@ -15,6 +14,7 @@ $("#enterForm").submit(function (e) {
     document.getElementById("gameModule").style.display = "block";
     document.getElementById("enterModule").style.display = "none";
     e.preventDefault();
+    document.getElementById('enterForm').blur();
 });
 
 $("#chatForm").submit(function (e) {
@@ -26,6 +26,7 @@ $("#chatForm").submit(function (e) {
         value: message
     });
     e.preventDefault();
+    document.getElementById('chatForm').blur();
 });
 
 var canvas = document.getElementById("myCanvas");
@@ -67,9 +68,6 @@ var scoreBlue = 0;
 var scoreRed = 0;
 
 //Control cursor keys
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
-
 function keyDownHandler(e) {
     if (e.keyCode == 39) {
         socket.emit("rightKeyDown", {
@@ -83,7 +81,6 @@ function keyDownHandler(e) {
         });
     }
 }
-
 function keyUpHandler(e) {
     if (e.keyCode == 39) {
         socket.emit("rightKeyUp", {
@@ -97,6 +94,8 @@ function keyUpHandler(e) {
         });
     }
 }
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
 
 //draw objects
 function drawBall(ball) {
@@ -183,6 +182,7 @@ function btnStart() {
             canvasMessage = '';
         }
     }
+    document.getElementById('btnStart').blur();
     setTimeout(deleteCanvasMessage, 2000);
 }
 socket.on('setStart', function (data) {
@@ -197,6 +197,7 @@ socket.on('setStart', function (data) {
 function btnPause() {
     socket.emit("getPause");
     canvasMessage = 'Pause';
+    document.getElementById('btnPause').blur();
 }
 socket.on('setPause', function () {
     document.getElementById("btnPause").disabled = "disabled";
@@ -208,6 +209,7 @@ function btnReset() {
         value: chosenRoom
     });
     canvasMessage = '';
+    document.getElementById('btnReset').blur();
 }
 //Receive System message from server
 socket.on('showSystemMessage', function (data) {

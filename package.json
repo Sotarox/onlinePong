@@ -1,15 +1,15 @@
 {
-  "name": "serverheroku",
+  "name": "server",
   "version": "1.0.0",
   "description": "realtime pong",
-  "main": "serverHeroku.js",
+  "main": "server.js",
   "dependencies": {
     "express": "^4.18.1",
     "path": "^0.12.7",
     "socket.io": "^4.5.1"
   },
   "scripts": {
-    "start": "node serverHeroku.js"
+    "start": "node server.js"
   },
   "engines": {
     "node": "16.11.1",

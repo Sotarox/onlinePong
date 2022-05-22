@@ -11,8 +11,8 @@ var POST = process.env.PORT || 8080;
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/client.html');
 });
-app.get('/forClient.css', function (req, res) {
-  res.sendFile(__dirname + '/forClient.css');
+app.get('/client.css', function (req, res) {
+  res.sendFile(__dirname + '/client.css');
 });
 // Enable browser to access files under components folder
 app.use(express.static('components'));
