@@ -2,28 +2,33 @@
 
 ## Web application demo
 https://onlinepong.herokuapp.com  
-- choose a room and play pong game.  
-- use <- and -> keys in keyboard to move your paddle. 
+- Choose a room and play pong game.  
+- Hit `<-` and `->` keys in keyboard to move your paddle. 
 - Players in the same room can play and chat together. 
 - Smartphone and Tablet are currently not supported.
 
-## Dependencies
-- Node.js
+## Dev environment
+
+This App is developped by:
+
+- Mac OSX
+- Node.js 16.11.1
+- npm 8.0.0
 
 ## How to run in your local pc
 When you try to understand how does it work, clone this project by `git clone`.
 
 Then do the followings in a console:
-- Move working directory to "serverHeroku" folder
+- Move to project root folder
 ```
-cd serverHeroku
+cd onlinePong
 ```
-- install dependencies
+- Install dependencies
 ```
 npm install
 ```
-- run Node
+- Run Node
 ```
 node serverHeroku.js
 ```
-- open browser, type in url `localhost:8080`
+- Open a browser, type in url `localhost:8080`
