@@ -8,7 +8,6 @@ https://onlinepong.herokuapp.com
 - Smartphone and Tablet are currently not supported.
 
 ## Dev environment
-
 This App is developped by:
 
 - Mac OSX
@@ -32,3 +31,12 @@ npm install
 node server.js
 ```
 - Open a browser, type in url `localhost:8080`
+
+## Run by container
+Instead of building locally, the app can run in a docker container.  
+As a prerequisity, you need to download [Docker Desktop](https://docs.docker.com/get-docker/) beforehand.  
+Type the following in the project root folder (=`onlinePong`):  
+```
+docker compose up
+```
+Then open a browser, type in url `localhost:8080`
