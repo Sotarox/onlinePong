@@ -1,5 +1,5 @@
 var socket = io();
-  
+
 document.getElementById("gameModule").style.display = "none";
 let userName = '';
 var chosenRoom = '';
@@ -57,11 +57,11 @@ class Paddle {
     }
 }
 var player = new Player();
-var ball1 = new Ball('#AAAAAA');
-var paddle1 = new Paddle(0, canvas.height - 10, '#0095DD'); //blue
-var paddle2 = new Paddle(0, 0, '#DD4800'); //red
-var paddle3 = new Paddle(0, canvas.height - 10, '#00AA00'); //green
-var paddle4 = new Paddle(0, 0, '#FFABCE') //pink
+var ball1 = new Ball(COLORS.BALL_GRAY);
+var paddle1 = new Paddle(0, canvas.height - 10, COLORS.PLAYER_BLUE);
+var paddle2 = new Paddle(0, 0, COLORS.PLAYER_RED);
+var paddle3 = new Paddle(0, canvas.height - 10, COLORS.PLAYER_GREEN);
+var paddle4 = new Paddle(0, 0, COLORS.PLAYER_PINK)
 
 //score
 var scoreBlue = 0;
@@ -116,24 +116,22 @@ function drawPaddle(paddle) {
 
 function drawScore() {
     ctx.font = "14px Orbitron";
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = COLORS.PLAYER_BLUE;
     ctx.fillText("P1(Blue) & P3(Green): " + scoreBlue, 8, 25);
-    ctx.fillStyle = "#DD4800";
+    ctx.fillStyle = COLORS.PLAYER_RED;
     ctx.fillText("P2(Red) & P3(Pink): " + scoreRed, 8, 45);
 }
 
 function drawCanvasMessage() {
+    ctx.fillStyle = COLORS.TEXT_GRAY;
     if (canvasMessage === 'Start') {
         ctx.font = "120px Orbitron";
-        ctx.fillStyle = "#DDDDDD";
         ctx.fillText(canvasMessage, 80, 300);
     } else if (canvasMessage === 'Pause') {
         ctx.font = "100px Orbitron";
-        ctx.fillStyle = "#DDDDDD";
         ctx.fillText(canvasMessage, 80, 300);
     } else { //When Game is over
         ctx.font = "26px Orbitron";
-        ctx.fillStyle = "#0095DD";
         ctx.fillText(canvasMessage, 25, 300);
     }
 }

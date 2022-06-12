@@ -196,7 +196,7 @@ io.on('connection', socket => {
       if (data.value === roomArray[i].name) {
         roomArray[i].scoreBlue = 0; roomArray[i].scoreRed = 0;
         io.to(data.value).emit("renewScore", { scoreBlue: 0, scoreRed: 0 });
-        roomArray[i].x = 240; roomArray[i].y = 270; roomArray[i].dy = -2;
+        roomArray[i].ballX = 240; roomArray[i].ballY = 270; roomArray[i].balldy = -2;
         roomArray[i].gameOverSwitch = false;
         roomArray[i].calcSwitch = true;
       }
