@@ -9,13 +9,13 @@ const path = require('path');
 var POST = process.env.PORT || 8080;
 
 app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/client.html');
+  res.sendFile(__dirname + '/client/client.html');
 });
 app.get('/client.css', function (req, res) {
-  res.sendFile(__dirname + '/client.css');
+  res.sendFile(__dirname + '/client/client.css');
 });
-// Enable browser to access files under components folder
-app.use(express.static('components'));
+// Enable browser to access files under 'client' folder
+app.use(express.static('client'));
 server.listen(POST, () => {
   console.log("Pong Server started running on:", POST);
 });
@@ -24,7 +24,7 @@ server.listen(POST, () => {
 //Players
 var players = [['available', 'available', 'available', 'available'], ['available', 'available', 'available', 'available']];
 //import Room class
-var Room = require("./moduleRoom.js");
+var Room = require("./server/room.js");
 var room01 = new Room('room01');
 var room02 = new Room('room02');
 var roomArray = [room01, room02];
@@ -101,9 +101,12 @@ io.on('connection', socket => {
       if (data.value === roomArray[i].name) {
         io.to(roomArray[i].name).emit("setCoordinates",
           {
-            positionX: roomArray[i].x, positionY: roomArray[i].y,
-            paddleX: roomArray[i].paddleX, paddleX2: roomArray[i].paddleX2,
-            paddleX3: roomArray[i].paddleX3, paddleX4: roomArray[i].paddleX4
+            ballX: roomArray[i].ballX, 
+            ballY: roomArray[i].ballY,
+            paddleX: roomArray[i].paddleX, 
+            paddleX2: roomArray[i].paddleX2,
+            paddleX3: roomArray[i].paddleX3, 
+            paddleX4: roomArray[i].paddleX4
           });
       }
     }

@@ -17,20 +17,21 @@ This App is developped by:
 ## How to run in your local pc
 When you try to understand how does it work, clone this project by `git clone`.
 
-Then do the followings in a console:
-- Move to project root folder
+Then do the followings in a console.  
+
+- Move to project root folder:
 ```
 cd onlinePong
 ```
-- Install dependencies
+- Install dependencies:
 ```
 npm install
 ```
-- Run Node
+- Run Node:
 ```
 node server.js
 ```
-- Open a browser, type in url `localhost:8080`
+- Open `localhost:8080` in a browser.
 
 ## Run by container
 Instead of building locally, the app can run in a docker container.  
@@ -39,4 +40,4 @@ Type the following in the project root folder (=`onlinePong`):
 ```
 docker compose up
 ```
-Then open a browser, type in url `localhost:8080`
+Open `localhost:8080` in a browser.

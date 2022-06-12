@@ -144,8 +144,8 @@ function draw() {
         value: chosenRoom
     });
     socket.on('setCoordinates', function (data) {
-        ball1.positionX = data.positionX;
-        ball1.positionY = data.positionY;
+        ball1.positionX = data.ballX;
+        ball1.positionY = data.ballY;
         paddle1.positionX = data.paddleX;
         paddle2.positionX = data.paddleX2;
         paddle3.positionX = data.paddleX3;
