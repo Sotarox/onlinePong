@@ -1,3 +1,5 @@
+const SOCKET = io();
+
 const COLORS = {
     PLAYER_BLUE: '#0095DD',
     PLAYER_RED: '#DD4800',

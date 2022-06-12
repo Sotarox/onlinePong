@@ -1,5 +1,3 @@
-var socket = io();
-
 document.getElementById("gameModule").style.display = "none";
 let userName = '';
 var chosenRoom = '';
@@ -7,7 +5,7 @@ var chosenRoom = '';
 $("#enterForm").submit(function (e) {
     userName = $("#msgForm").val() || "John Doe";
     chosenRoom = $("#rooms").val();
-    socket.emit("client_to_server_join", {
+    SOCKET.emit("client_to_server_join", {
         room: chosenRoom,
         clientName: userName
     });
@@ -22,7 +20,7 @@ $("#chatForm").submit(function (e) {
     $("#chatInput").val('');
     message = userName + ": " + message;
     // send chat message
-    socket.emit("client_to_server_chat", {
+    SOCKET.emit("client_to_server_chat", {
         value: message
     });
     e.preventDefault();
@@ -67,36 +65,6 @@ var paddle4 = new Paddle(0, 0, COLORS.PLAYER_PINK)
 var scoreBlue = 0;
 var scoreRed = 0;
 
-//Control cursor keys
-function keyDownHandler(e) {
-    if (e.keyCode == 39) {
-        socket.emit("rightKeyDown", {
-            room: chosenRoom,
-            value: player.playerNumber
-        });
-    } else if (e.keyCode == 37) {
-        socket.emit("leftKeyDown", {
-            room: chosenRoom,
-            value: player.playerNumber
-        });
-    }
-}
-function keyUpHandler(e) {
-    if (e.keyCode == 39) {
-        socket.emit("rightKeyUp", {
-            room: chosenRoom,
-            value: player.playerNumber
-        });
-    } else if (e.keyCode == 37) {
-        socket.emit("leftKeyUp", {
-            room: chosenRoom,
-            value: player.playerNumber
-        });
-    }
-}
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
-
 //draw objects
 function drawBall(ball) {
     ctx.beginPath();
@@ -138,10 +106,10 @@ function drawCanvasMessage() {
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    socket.emit("getCoordinates", {
+    SOCKET.emit("getCoordinates", {
         value: chosenRoom
     });
-    socket.on('setCoordinates', function (data) {
+    SOCKET.on('setCoordinates', function (data) {
         ball1.positionX = data.ballX;
         ball1.positionY = data.ballY;
         paddle1.positionX = data.paddleX;
@@ -160,13 +128,13 @@ function draw() {
 }
 
 //Get playerNumber
-socket.on('setPlayerNumber', function (data) {
+SOCKET.on('setPlayerNumber', function (data) {
     player.playerNumber = data.value;
 });
 
 //Start Button
 function btnStart() {
-    socket.emit("getStart", {
+    SOCKET.emit("getStart", {
         value: chosenRoom
     });
     if (canvasMessage === '') {
@@ -183,7 +151,7 @@ function btnStart() {
     document.getElementById('btnStart').blur();
     setTimeout(deleteCanvasMessage, 2000);
 }
-socket.on('setStart', function (data) {
+SOCKET.on('setStart', function (data) {
     scoreBlue = data.scoreBlue;
     scoreRed = data.scoreRed;
     document.getElementById("btnStart").disabled = "disabled";
@@ -193,32 +161,32 @@ socket.on('setStart', function (data) {
 });
 
 function btnPause() {
-    socket.emit("getPause");
+    SOCKET.emit("getPause");
     canvasMessage = 'Pause';
     document.getElementById('btnPause').blur();
 }
-socket.on('setPause', function () {
+SOCKET.on('setPause', function () {
     document.getElementById("btnPause").disabled = "disabled";
     document.getElementById("btnStart").disabled = "";
 });
 
 function btnReset() {
-    socket.emit("getReset", {
+    SOCKET.emit("getReset", {
         value: chosenRoom
     });
     canvasMessage = '';
     document.getElementById('btnReset').blur();
 }
 //Receive System message from server
-socket.on('showSystemMessage', function (data) {
+SOCKET.on('showSystemMessage', function (data) {
     $("#systemMessage").prepend("<div>" + data.value + "</div>");
 });
-socket.on('showCanvasMessage', function (data) {
+SOCKET.on('showCanvasMessage', function (data) {
     console.log(data.value);
     canvasMessage = data.value;
 });
 //score
-socket.on('renewScore', function (data) {
+SOCKET.on('renewScore', function (data) {
     scoreBlue = data.scoreBlue;
     scoreRed = data.scoreRed;
 });
