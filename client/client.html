@@ -27,7 +27,7 @@
     </div>
     <!--canvas and buttons(Start|Pause|Reset)-->
     <div id="gameModule">
-        <canvas id="myCanvas" width="480" height="540"></canvas>
+        <canvas id="canvas" width="480" height="540"></canvas>
         <div class="gameButtonsWrapper">
             <input type="button" id="btnStart" class="gameButtons" value="Start" onclick="btnStart()" />
             <input type="button" id="btnPause" class="gameButtons" disabled="disabled" value="Pause"
@@ -47,8 +47,12 @@
         <div id="systemMessage"></div>
     </div>
     <script src='/socket.io/socket.io.js'></script>
+    <!-- (1) global.js must be loaded firstly -->
     <script src='globals.js'></script>
+    <!-- (2) other module js files -->
+    <script src='renderer.js'></script>
     <script src='keyHandlers.js'></script>
+    <!-- (3) client.js must be loaded lastly -->
     <script src='client.js'></script>
 </body>
 
