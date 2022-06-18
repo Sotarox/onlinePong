@@ -31,29 +31,6 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 var canvasMessage = '';
 
-class Player {
-    constructor() {
-        this.userName = '';
-        this.playerNumber = '';
-    }
-}
-class Ball {
-    constructor(color) {
-        this.radius = 10;
-        this.positionX = 0;
-        this.positionY = 0;
-        this.color = color;
-    }
-}
-class Paddle {
-    constructor(positionX, positionY, color) {
-        this.height = 10;
-        this.width = 65;
-        this.positionX = positionX;
-        this.positionY = positionY;
-        this.color = color;
-    }
-}
 var player = new Player();
 var ball1 = new Ball(COLORS.BALL_GRAY);
 var paddle1 = new Paddle(0, canvas.height - 10, COLORS.PLAYER_BLUE);
