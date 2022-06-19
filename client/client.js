@@ -1,13 +1,12 @@
 document.getElementById("gameModule").style.display = "none";
-let userName = '';
-var chosenRoom = '';
+var player = new Player();
 
 $("#enterForm").submit(function (e) {
-    userName = $("#msgForm").val() || "John Doe";
-    chosenRoom = $("#rooms").val();
+    player.userName = $("#msgForm").val() || "John Doe";
+    player.room = $("#rooms").val();
     SOCKET.emit("client_to_server_join", {
-        room: chosenRoom,
-        clientName: userName
+        clientName: player.userName,
+        room: player.room
     });
     document.getElementById("gameModule").style.display = "block";
     document.getElementById("enterModule").style.display = "none";
@@ -16,9 +15,10 @@ $("#enterForm").submit(function (e) {
 });
 
 $("#chatForm").submit(function (e) {
-    var message = $("#chatInput").val();
-    $("#chatInput").val('');
-    message = userName + ": " + message;
+    var message = $("#chatInputField").val();
+    //delete input value in text field
+    $("#chatInputField").val('');
+    message = player.userName + ": " + message;
     // send chat message
     SOCKET.emit("client_to_server_chat", {
         value: message
@@ -31,7 +31,6 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 var canvasMessage = '';
 
-var player = new Player();
 var ball1 = new Ball(COLORS.BALL_GRAY);
 var paddle1 = new Paddle(0, canvas.height - 10, COLORS.PLAYER_BLUE);
 var paddle2 = new Paddle(0, 0, COLORS.PLAYER_RED);
@@ -50,7 +49,7 @@ SOCKET.on('setPlayerNumber', function (data) {
 //Start Button
 function btnStart() {
     SOCKET.emit("getStart", {
-        value: chosenRoom
+        value: player.room
     });
     if (canvasMessage === '') {
         canvasMessage = 'Start';
@@ -87,7 +86,7 @@ SOCKET.on('setPause', function () {
 
 function btnReset() {
     SOCKET.emit("getReset", {
-        value: chosenRoom
+        value: player.room
     });
     canvasMessage = '';
     document.getElementById('btnReset').blur();

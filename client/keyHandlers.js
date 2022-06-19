@@ -1,12 +1,12 @@
 function keyDownHandler(e) {
     if (e.keyCode == 39) {
         SOCKET.emit("rightKeyDown", {
-            room: chosenRoom,
+            room: player.room,
             value: player.playerNumber
         });
     } else if (e.keyCode == 37) {
         SOCKET.emit("leftKeyDown", {
-            room: chosenRoom,
+            room: player.room,
             value: player.playerNumber
         });
     }
@@ -14,12 +14,12 @@ function keyDownHandler(e) {
 function keyUpHandler(e) {
     if (e.keyCode == 39) {
         SOCKET.emit("rightKeyUp", {
-            room: chosenRoom,
+            room: player.room,
             value: player.playerNumber
         });
     } else if (e.keyCode == 37) {
         SOCKET.emit("leftKeyUp", {
-            room: chosenRoom,
+            room: player.room,
             value: player.playerNumber
         });
     }

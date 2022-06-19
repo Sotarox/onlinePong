@@ -51,7 +51,7 @@ function gameStateWatcher(room) {
     io.to(room.name).emit("showCanvasMessage", { value: canvasMessage });
     room.gameOverSwitch = false;
   }
-}//end of gameStateWatcher
+}
 setInterval(function () { gameStateWatcher(room01) }, 10);
 setInterval(function () { gameStateWatcher(room02) }, 10);
 

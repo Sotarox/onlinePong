@@ -44,7 +44,7 @@ function render() {
     const ctx = document.getElementById('canvas').getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     SOCKET.emit("getCoordinates", {
-        value: chosenRoom
+        value: player.room
     });
     SOCKET.on('setCoordinates', function (data) {
         ball1.positionX = data.ballX;
