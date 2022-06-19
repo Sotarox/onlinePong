@@ -13,20 +13,20 @@
 
 <body>
     <!--entry form-->
-    <div id="enterModule">
-        <form id="enterForm">
-            <label class="roomLabel" for="rooms">Choose a Room:</label>
-            <select class="form-control" id="rooms">
+    <div id="entryDiv">
+        <form id="entryForm">
+            <label class="roomLabel" for="roomsDropDownList">Choose a Room:</label>
+            <select class="form-control" id="roomsDropDownList">
                 <option value="room01">Room01</option>
                 <option value="room02">Room02</option>
             </select>
-            <label class="nameLabel" for="msgForm">Name:</label>
-            <input type="text" class="form-control" id="msgForm">
+            <label class="nameLabel" for="nameField">Name:</label>
+            <input type="text" class="form-control" id="nameField">
             <button type="submit" class="btn btn-primary" id="sendButton">Enter</button>
         </form>
     </div>
     <!--canvas and buttons(Start|Pause|Reset)-->
-    <div id="gameModule">
+    <div id="gameDiv">
         <canvas id="canvas" width="480" height="540"></canvas>
         <div class="gameButtonsWrapper">
             <input type="button" id="btnStart" class="gameButtons" value="Start" onclick="btnStart()" />
@@ -44,7 +44,7 @@
             </form>
         </div>
         <!--system & chat message-->
-        <div id="systemMessage"></div>
+        <div id="systemMessageDiv"></div>
     </div>
     <script src='/socket.io/socket.io.js'></script>
     <!-- (1) global.js must be loaded firstly -->

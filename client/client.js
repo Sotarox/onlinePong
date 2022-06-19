@@ -1,17 +1,17 @@
-document.getElementById("gameModule").style.display = "none";
+document.getElementById("gameDiv").style.display = "none";
 var player = new Player();
 
-$("#enterForm").submit(function (e) {
-    player.userName = $("#msgForm").val() || "John Doe";
-    player.room = $("#rooms").val();
+$("#entryForm").submit(function (e) {
+    player.userName = $("#nameField").val() || "John Doe";
+    player.room = $("#roomsDropDownList").val();
     SOCKET.emit("client_to_server_join", {
         clientName: player.userName,
         room: player.room
     });
-    document.getElementById("gameModule").style.display = "block";
-    document.getElementById("enterModule").style.display = "none";
+    document.getElementById("gameDiv").style.display = "block";
+    document.getElementById("entryDiv").style.display = "none";
     e.preventDefault();
-    document.getElementById('enterForm').blur();
+    document.getElementById('entryForm').blur();
 });
 
 $("#chatForm").submit(function (e) {
@@ -27,19 +27,17 @@ $("#chatForm").submit(function (e) {
     document.getElementById('chatForm').blur();
 });
 
-var canvas = document.getElementById("canvas");
-var ctx = canvas.getContext("2d");
-var canvasMessage = '';
 
 var ball1 = new Ball(COLORS.BALL_GRAY);
-var paddle1 = new Paddle(0, canvas.height - 10, COLORS.PLAYER_BLUE);
+var paddle1 = new Paddle(0, document.getElementById("canvas").height - 10, COLORS.PLAYER_BLUE);
 var paddle2 = new Paddle(0, 0, COLORS.PLAYER_RED);
-var paddle3 = new Paddle(0, canvas.height - 10, COLORS.PLAYER_GREEN);
+var paddle3 = new Paddle(0, document.getElementById("canvas").height - 10, COLORS.PLAYER_GREEN);
 var paddle4 = new Paddle(0, 0, COLORS.PLAYER_PINK)
 
 //score
 var scoreBlue = 0;
 var scoreRed = 0;
+var canvasMessage = '';
 
 //Get playerNumber
 SOCKET.on('setPlayerNumber', function (data) {
@@ -57,13 +55,8 @@ function btnStart() {
         canvasMessage = '';
     }
 
-    function deleteCanvasMessage() {
-        if (canvasMessage === 'Start') {
-            canvasMessage = '';
-        }
-    }
     document.getElementById('btnStart').blur();
-    setTimeout(deleteCanvasMessage, 2000);
+    setTimeout(()=>{if(canvasMessage === 'Start') canvasMessage = '';}, 2000);
 }
 SOCKET.on('setStart', function (data) {
     scoreBlue = data.scoreBlue;
@@ -93,7 +86,7 @@ function btnReset() {
 }
 //Receive System message from server
 SOCKET.on('showSystemMessage', function (data) {
-    $("#systemMessage").prepend("<div>" + data.value + "</div>");
+    $("#systemMessageDiv").prepend("<div>" + data.value + "</div>");
 });
 SOCKET.on('showCanvasMessage', function (data) {
     console.log(data.value);

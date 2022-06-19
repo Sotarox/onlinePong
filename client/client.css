@@ -52,7 +52,7 @@ input.gameButtons {
     /*vanish the underline*/
 }
 
-#enterForm {
+#entryForm {
     font-family: 'Orbitron', sans-serif;
     margin: auto;
     padding: 10px;
@@ -62,7 +62,7 @@ input.gameButtons {
     background-color: #888;
 }
 
-#systemMessage {
+#systemMessageDiv {
     margin: auto;
     width: 480px;
     font-family: 'Press Start 2P', cursive;
