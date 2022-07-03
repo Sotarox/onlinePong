@@ -24,12 +24,11 @@ server.listen(POST, () => {
 //Players
 var players = [['available', 'available', 'available', 'available'], ['available', 'available', 'available', 'available']];
 //import Room class
-var Room = require("./server/room.js");
-var room01 = new Room('room01');
-var room02 = new Room('room02');
-var rooms = [room01, room02];
-setInterval(() => { room01.calculate() }, 10);
-setInterval(() => { room02.calculate() }, 10);
+const Room = require("./server/room.js");
+const rooms = new Map([
+  ['room01', new Room('room01')],
+  ['room02', new Room('room02')],
+]);
 
 function gameStateWatcher(room) {
   //watch scores
@@ -52,8 +51,12 @@ function gameStateWatcher(room) {
     room.gameOverSwitch = false;
   }
 }
-setInterval(() => { gameStateWatcher(room01) }, 10);
-setInterval(() => { gameStateWatcher(room02) }, 10);
+// Start rendering rooms 
+// TODO: Unused room is also rendered. Improve this only when somebody enter the room.
+for (const room of rooms.values()) {
+  setInterval(() => room.calculate(), 10);
+  setInterval(() => gameStateWatcher(room), 10);
+}
 
 //sockets start
 io.on('connection', (socket) => {
@@ -86,30 +89,25 @@ io.on('connection', (socket) => {
     io.to(chosenRoom).emit("showSystemMessage", { value: systemMessage });
   });
   //Start Button
-  socket.on("getStart", (data) => {
-    console.log(data.value + " Start Button is pressed");
-    rooms.forEach((room) => {
-      if (data.value === room.name) {
-        room.calcSwitch = true;
-        io.to(room.name).emit("setStart", { scoreBlue: room.scoreBlue, scoreRed: room.scoreRed });
-      }
-    });
+  socket.on("doStart", (data) => {
+    // get reference of the room instance
+    let room = rooms.get(data.roomName);
+    console.log(`${room.name} Start Button is pressed`);
+    room.calcSwitch = true;
+    io.to(room.name).emit("setStart", { scoreBlue: room.scoreBlue, scoreRed: room.scoreRed });
   });
   //to initialize ball&paddle coordinates
   socket.on("getCoordinates", (data) => {
-    rooms.forEach((room) => {
-      if (data.value === room.name) {
-        io.to(room.name).emit("setCoordinates",
-          {
-            ballX: room.ballX,
-            ballY: room.ballY,
-            paddleX: room.paddleX,
-            paddleX2: room.paddleX2,
-            paddleX3: room.paddleX3,
-            paddleX4: room.paddleX4
-          });
-      }
-    });
+    let room = rooms.get(data.roomName);
+    io.to(room.name).emit("setCoordinates",
+      {
+        ballX: room.ballX,
+        ballY: room.ballY,
+        paddleX: room.paddleX,
+        paddleX2: room.paddleX2,
+        paddleX3: room.paddleX3,
+        paddleX4: room.paddleX4
+      });
   });
 
   //Control paddles
@@ -178,16 +176,13 @@ io.on('connection', (socket) => {
     });
   });
   //Pause Button
-  socket.on("getPause", () => {
-    console.log(chosenRoom + " Pause Button is pressed");
-    rooms.forEach((room) => {
-      if (chosenRoom === room.name) {
-        room.calcSwitch = false;
-        io.to(chosenRoom).emit("setPause");
-        systemMessage = clientName + " pressed Pause Button"
-        io.to(chosenRoom).emit("showSystemMessage", { value: systemMessage });
-      }
-    });
+  socket.on("doPause", (data) => {
+    let room = rooms.get(data.roomName);
+    console.log(`${room.name} Pause Button is pressed`);
+    room.calcSwitch = false;
+    io.to(room.name).emit("setPause");
+    systemMessage = `${clientName} pressed Pause Button`;
+    io.to(room.name).emit("showSystemMessage", { value: systemMessage });
   });
   //Reset Button
   socket.on("getReset", (data) => {
@@ -222,6 +217,6 @@ io.on('connection', (socket) => {
     systemMessage = clientName + ' left the room. Chao.'
     io.to(chosenRoom).emit("showSystemMessage", { value: systemMessage });
   });
-//End of socket
+  //End of socket
 });
 

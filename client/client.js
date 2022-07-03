@@ -46,17 +46,16 @@ SOCKET.on('setPlayerNumber', function (data) {
 
 //Start Button
 function btnStart() {
-    SOCKET.emit("getStart", {
-        value: player.room
+    SOCKET.emit("doStart", {
+        roomName: player.room
     });
     if (canvasMessage === '') {
         canvasMessage = 'Start';
     } else { //canvasMessage === "Pause" or "player1 won"
         canvasMessage = '';
     }
-
     document.getElementById('btnStart').blur();
-    setTimeout(()=>{if(canvasMessage === 'Start') canvasMessage = '';}, 2000);
+    setTimeout(() => { if (canvasMessage === 'Start') canvasMessage = ''; }, 2000);
 }
 SOCKET.on('setStart', function (data) {
     scoreBlue = data.scoreBlue;
@@ -68,7 +67,7 @@ SOCKET.on('setStart', function (data) {
 });
 
 function btnPause() {
-    SOCKET.emit("getPause");
+    SOCKET.emit("doPause", { roomName: player.room });
     canvasMessage = 'Pause';
     document.getElementById('btnPause').blur();
 }
