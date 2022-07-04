@@ -1,3 +1,11 @@
+class Player{
+    constructor(){
+        this.isAvailable = true;
+        // TODO research what is the purpose to have soketId
+        this.socketId = "";
+    }
+}
+
 class Room {
     constructor(name) {
         this.name = name;
@@ -39,6 +47,13 @@ class Room {
         this.paddleWidth4 = 65;
         this.rightPressed4 = false;
         this.leftPressed4 = false;
+        //players
+        this.players = {
+            Player1: new Player(),
+            Player2: new Player(),
+            Player3: new Player(),
+            Player4: new Player()
+        }
     }
     calculate() {
         if (this.calcSwitch == true) {

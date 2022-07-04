@@ -63,28 +63,26 @@ io.on('connection', (socket) => {
   console.log(socket.id + ' connected to server with socket ver: ', socket.conn.protocol);
   var chosenRoom = '';
   var clientName = '';
+  var playerNumber = '';
   var systemMessage = '';
 
   socket.on('client_to_server_join', (data) => {
     chosenRoom = data.room;
     socket.join(chosenRoom);
     clientName = data.clientName;
-    systemMessage = data.clientName + ' logged in as a Audience'
-    //playerArray registration
-    for (var i = 0; i < players.length; i++) {
-      if (data.room === 'room0' + (i + 1)) {
-        for (var k = 0; k < players[i].length; k++) {
-          if (players[i][k] === 'available') {
-            players[i][k] = socket.id;
-            var playerNumber = 'Player' + (k + 1);
-            io.to(socket.id).emit('setPlayerNumber', { value: playerNumber });
-            console.log('room0' + (i + 1) + ' ' + playerNumber + ' is ' + players[i][k]);
-            //overwrite systemMessage from 'guest' to 'playerNumber'
-            systemMessage = clientName + ' logged in as a ' + playerNumber;
-            break;
-          }
-        }
+    // playerArray registration
+    let room = rooms.get(chosenRoom);
+    for (const [player_number, player] of Object.entries(room.players)) {
+      if (player.isAvailable){
+        player.isAvailable = false;
+        player.socketId = socket.id;
+        playerNumber = player_number;
+        console.log(`${chosenRoom} ${player_number} is taken by playerName: ${clientName}`)
+        io.to(socket.id).emit('setPlayerNumber', { value: player_number });
+        systemMessage = `${clientName} logged in as a ${player_number}`;
+        break;
       }
+      systemMessage = `${data.clientName} logged in as a Audience`;
     }
     io.to(chosenRoom).emit("showSystemMessage", { value: systemMessage });
   });
@@ -187,15 +185,10 @@ io.on('connection', (socket) => {
   //disconnect
   socket.on('disconnect', () => {
     console.log(`${socket.id} ${chosenRoom} ${clientName} has disconnected`);
-    players.forEach((player, i) => {
-      player.forEach((status, k) => {
-        if (status === socket.id) {
-          players[i][k] = 'available';
-          console.log(`room0${(i + 1)} playerNumber${(k + 1)} is available`);
-        }
-      });
-    });
-    systemMessage = clientName + ' left the room. Chao.'
+    // release playerNumber
+    rooms.get(chosenRoom).players[playerNumber].isAvailable = true;
+    console.log(`${chosenRoom} ${playerNumber} is available`);
+    systemMessage = `${clientName} left the room. Chao.`;
     io.to(chosenRoom).emit("showSystemMessage", { value: systemMessage });
   });
   //End of socket
