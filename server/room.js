@@ -125,5 +125,15 @@ class Room {
             }
         }
     }
+
+    reset() {
+        this.scoreBlue = 0;
+        this.scoreRed = 0;
+        this.ballX = 240; 
+        this.ballY = 270; 
+        this.balldy = -2;
+        this.gameOverSwitch = false;
+        this.calcSwitch = true;
+    }
 }//Room
 module.exports = Room;

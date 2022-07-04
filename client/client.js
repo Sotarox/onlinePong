@@ -77,8 +77,8 @@ SOCKET.on('setPause', function () {
 });
 
 function btnReset() {
-    SOCKET.emit("getReset", {
-        value: player.room
+    SOCKET.emit("doReset", {
+        roomName: player.room
     });
     canvasMessage = '';
     document.getElementById('btnReset').blur();

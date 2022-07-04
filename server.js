@@ -112,68 +112,56 @@ io.on('connection', (socket) => {
 
   //Control paddles
   socket.on("rightKeyDown", (data) => {
-    console.log(data.room + ' ' + data.value + " :rightKey is pressed");
-    rooms.forEach((room) => {
-      if (data.room === room.name) {
-        if (data.value === 'Player1') {
-          room.rightPressed1 = true;
-        } else if (data.value === 'Player2') {
-          room.rightPressed2 = true;
-        } else if (data.value === 'Player3') {
-          room.rightPressed3 = true;
-        } else if (data.value === 'Player4') {
-          room.rightPressed4 = true;
-        }
-      }
-    });
+    let room = rooms.get(data.roomName);
+    console.log(`${room.name} ${data.playerNumber} :rightKey is pressed`);
+    if (data.playerNumber === 'Player1') {
+      room.rightPressed1 = true;
+    } else if (data.playerNumber === 'Player2') {
+      room.rightPressed2 = true;
+    } else if (data.playerNumber === 'Player3') {
+      room.rightPressed3 = true;
+    } else if (data.playerNumber === 'Player4') {
+      room.rightPressed4 = true;
+    }
   });
   socket.on("leftKeyDown", (data) => {
-    console.log(data.room + ' ' + data.value + " :leftKey is pressed");
-    rooms.forEach((room) => {
-      if (data.room === room.name) {
-        if (data.value === 'Player1') {
-          room.leftPressed1 = true;
-        } else if (data.value === 'Player2') {
-          room.leftPressed2 = true;
-        } else if (data.value === 'Player3') {
-          room.leftPressed3 = true;
-        } else if (data.value === 'Player4') {
-          room.leftPressed4 = true;
-        }
-      }
-    });
+    let room = rooms.get(data.roomName);
+    console.log(`${room.name} ${data.playerNumber} :leftKey is pressed`);
+    if (data.playerNumber === 'Player1') {
+      room.leftPressed1 = true;
+    } else if (data.playerNumber === 'Player2') {
+      room.leftPressed2 = true;
+    } else if (data.playerNumber === 'Player3') {
+      room.leftPressed3 = true;
+    } else if (data.playerNumber === 'Player4') {
+      room.leftPressed4 = true;
+    }
   });
   socket.on("rightKeyUp", (data) => {
-    console.log(data.room + ' ' + data.value + " :rightKey is released");
-    rooms.forEach((room) => {
-      if (data.room === room.name) {
-        if (data.value === 'Player1') {
-          room.rightPressed1 = false;
-        } else if (data.value === 'Player2') {
-          room.rightPressed2 = false;
-        } else if (data.value === 'Player3') {
-          room.rightPressed3 = false;
-        } else if (data.value === 'Player4') {
-          room.rightPressed4 = false;
-        }
-      }
-    });
+    let room = rooms.get(data.roomName);
+    console.log(`${room.name} ${data.playerNumber} :rightKey is released`);
+    if (data.playerNumber === 'Player1') {
+      room.rightPressed1 = false;
+    } else if (data.playerNumber === 'Player2') {
+      room.rightPressed2 = false;
+    } else if (data.playerNumber === 'Player3') {
+      room.rightPressed3 = false;
+    } else if (data.playerNumber === 'Player4') {
+      room.rightPressed4 = false;
+    }
   });
   socket.on("leftKeyUp", (data) => {
-    console.log(data.room + ' ' + data.value + " :leftKey is released");
-    rooms.forEach((room) => {
-      if (data.room === room.name) {
-        if (data.value === 'Player1') {
-          room.leftPressed1 = false;
-        } else if (data.value === 'Player2') {
-          room.leftPressed2 = false;
-        } else if (data.value === 'Player3') {
-          room.leftPressed3 = false;
-        } else if (data.value === 'Player4') {
-          room.leftPressed4 = false;
-        }
-      }
-    });
+    let room = rooms.get(data.roomName);
+    console.log(`${room.name} ${data.playerNumber} :leftKey is released`);
+    if (data.playerNumber === 'Player1') {
+      room.leftPressed1 = false;
+    } else if (data.playerNumber === 'Player2') {
+      room.leftPressed2 = false;
+    } else if (data.playerNumber === 'Player3') {
+      room.leftPressed3 = false;
+    } else if (data.playerNumber === 'Player4') {
+      room.leftPressed4 = false;
+    }
   });
   //Pause Button
   socket.on("doPause", (data) => {
@@ -185,17 +173,11 @@ io.on('connection', (socket) => {
     io.to(room.name).emit("showSystemMessage", { value: systemMessage });
   });
   //Reset Button
-  socket.on("getReset", (data) => {
-    console.log(data.value + " Reset Button is pressed");
-    rooms.forEach((room) => {
-      if (data.value === room.name) {
-        room.scoreBlue = 0; room.scoreRed = 0;
-        io.to(data.value).emit("renewScore", { scoreBlue: 0, scoreRed: 0 });
-        room.ballX = 240; room.ballY = 270; room.balldy = -2;
-        room.gameOverSwitch = false;
-        room.calcSwitch = true;
-      }
-    });
+  socket.on("doReset", (data) => {
+    let room = rooms.get(data.roomName);
+    room.reset();
+    console.log(`${room.name} Reset Button is pressed`);
+    io.to(data.value).emit("renewScore", { scoreBlue: 0, scoreRed: 0 });
   });
   //chat
   socket.on("client_to_server_chat", (data) => {
@@ -205,7 +187,6 @@ io.on('connection', (socket) => {
   //disconnect
   socket.on('disconnect', () => {
     console.log(`${socket.id} ${chosenRoom} ${clientName} has disconnected`);
-
     players.forEach((player, i) => {
       player.forEach((status, k) => {
         if (status === socket.id) {
