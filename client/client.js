@@ -21,7 +21,8 @@ $("#chatForm").submit(function (e) {
     message = player.userName + ": " + message;
     // send chat message
     SOCKET.emit("client_to_server_chat", {
-        value: message
+        value: message,
+        room: player.room
     });
     e.preventDefault();
     document.getElementById('chatForm').blur();

@@ -60,31 +60,28 @@ for (const room of rooms.values()) {
 
 //sockets start
 io.on('connection', (socket) => {
-  console.log(socket.id + ' connected to server with socket ver: ', socket.conn.protocol);
-  var chosenRoom = '';
+  console.log(socket.id + ' connected to server with socketIO version: ', socket.conn.protocol);
   var clientName = '';
   var playerNumber = '';
   var systemMessage = '';
 
   socket.on('client_to_server_join', (data) => {
-    chosenRoom = data.room;
-    socket.join(chosenRoom);
+    socket.join(data.room);
     clientName = data.clientName;
     // playerArray registration
-    let room = rooms.get(chosenRoom);
+    let room = rooms.get(data.room);
     for (const [player_number, player] of Object.entries(room.players)) {
       if (player.isAvailable){
         player.isAvailable = false;
         player.socketId = socket.id;
         playerNumber = player_number;
-        console.log(`${chosenRoom} ${player_number} is taken by playerName: ${clientName}`)
         io.to(socket.id).emit('setPlayerNumber', { value: player_number });
         systemMessage = `${clientName} logged in as a ${player_number}`;
         break;
       }
       systemMessage = `${data.clientName} logged in as a Audience`;
     }
-    io.to(chosenRoom).emit("showSystemMessage", { value: systemMessage });
+    io.to(data.room).emit("showSystemMessage", { value: systemMessage });
   });
   //Start Button
   socket.on("doStart", (data) => {
@@ -180,17 +177,25 @@ io.on('connection', (socket) => {
   //chat
   socket.on("client_to_server_chat", (data) => {
     systemMessage = data.value;
-    io.to(chosenRoom).emit("showSystemMessage", { value: systemMessage });
+    io.to(data.room).emit("showSystemMessage", { value: systemMessage });
   });
   //disconnect
-  socket.on('disconnect', () => {
-    console.log(`${socket.id} ${chosenRoom} ${clientName} has disconnected`);
+  socket.on("disconnecting", () => {
+    // socket.rooms is the Set contains all rooms disconnecting user belonged to.
+    // E.g. { 'CYDIRvJe3-WWB0T5AAAD', 'room01' } 
+    // where the 0th element(CYD...) is the room in which only the user belonged to.  
+    const room = socket.rooms[1];
+    if (!rooms.get(room)) return;
+    console.log(`${socket.id} ${room} ${clientName} has disconnected`);
     // release playerNumber
-    rooms.get(chosenRoom).players[playerNumber].isAvailable = true;
-    console.log(`${chosenRoom} ${playerNumber} is available`);
+    rooms.get(room).players[playerNumber].isAvailable = true;
+    console.log(`${room} ${playerNumber} is available`);
     systemMessage = `${clientName} left the room. Chao.`;
-    io.to(chosenRoom).emit("showSystemMessage", { value: systemMessage });
+    io.to(room).emit("showSystemMessage", { value: systemMessage });
+  });
+  socket.on('disconnect', () => {
+    // Do nothing. The function body was transfered to 'disconnecting' method by refactor.
+    // TODO: Research if disconnect function is necessary. If not, delete this function.
   });
   //End of socket
 });
-
