@@ -21,8 +21,6 @@ server.listen(POST, () => {
 });
 
 ////Game
-//Players
-var players = [['available', 'available', 'available', 'available'], ['available', 'available', 'available', 'available']];
 //import Room class
 const Room = require("./server/room.js");
 const rooms = new Map([
@@ -73,7 +71,6 @@ io.on('connection', (socket) => {
     for (const [player_number, player] of Object.entries(room.players)) {
       if (player.isAvailable){
         player.isAvailable = false;
-        player.socketId = socket.id;
         playerNumber = player_number;
         io.to(socket.id).emit('setPlayerNumber', { value: player_number });
         systemMessage = `${clientName} logged in as a ${player_number}`;
@@ -184,8 +181,11 @@ io.on('connection', (socket) => {
     // socket.rooms is the Set contains all rooms disconnecting user belonged to.
     // E.g. { 'CYDIRvJe3-WWB0T5AAAD', 'room01' } 
     // where the 0th element(CYD...) is the room in which only the user belonged to.  
-    const room = socket.rooms[1];
-    if (!rooms.get(room)) return;
+    const room = Array.from(socket.rooms)[1];
+    if (!rooms.get(room)) {
+      console.log("Unknown old user, who stays in the room before server reboot, has disconnected");
+      return;
+    }
     console.log(`${socket.id} ${room} ${clientName} has disconnected`);
     // release playerNumber
     rooms.get(room).players[playerNumber].isAvailable = true;
