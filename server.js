@@ -60,7 +60,6 @@ for (const room of rooms.values()) {
 io.on('connection', (socket) => {
   console.log(socket.id + ' connected to server with socketIO version: ', socket.conn.protocol);
   var clientName = '';
-  var playerNumber = '';
   var systemMessage = '';
 
   socket.on('client_to_server_join', (data) => {
@@ -68,11 +67,11 @@ io.on('connection', (socket) => {
     clientName = data.clientName;
     // playerArray registration
     let room = rooms.get(data.room);
+    // for (key,value) of Object.entries(javascriptObject)
     for (const [player_number, player] of Object.entries(room.players)) {
       if (player.isAvailable){
         player.isAvailable = false;
-        playerNumber = player_number;
-        io.to(socket.id).emit('setPlayerNumber', { value: player_number });
+        socket.playerNumber = player_number; //set additional attribute to socket instance
         systemMessage = `${clientName} logged in as a ${player_number}`;
         break;
       }
@@ -105,53 +104,53 @@ io.on('connection', (socket) => {
   //Control paddles
   socket.on("rightKeyDown", (data) => {
     let room = rooms.get(data.roomName);
-    console.log(`${room.name} ${data.playerNumber} :rightKey is pressed`);
-    if (data.playerNumber === 'Player1') {
+    console.log(`${room.name} ${socket.playerNumber} :rightKey is pressed`);
+    if (socket.playerNumber === 'Player1') {
       room.rightPressed1 = true;
-    } else if (data.playerNumber === 'Player2') {
+    } else if (socket.playerNumber === 'Player2') {
       room.rightPressed2 = true;
-    } else if (data.playerNumber === 'Player3') {
+    } else if (socket.playerNumber === 'Player3') {
       room.rightPressed3 = true;
-    } else if (data.playerNumber === 'Player4') {
+    } else if (socket.playerNumber === 'Player4') {
       room.rightPressed4 = true;
     }
   });
   socket.on("leftKeyDown", (data) => {
     let room = rooms.get(data.roomName);
-    console.log(`${room.name} ${data.playerNumber} :leftKey is pressed`);
-    if (data.playerNumber === 'Player1') {
+    console.log(`${room.name} ${socket.playerNumber} :leftKey is pressed`);
+    if (socket.playerNumber === 'Player1') {
       room.leftPressed1 = true;
-    } else if (data.playerNumber === 'Player2') {
+    } else if (socket.playerNumber === 'Player2') {
       room.leftPressed2 = true;
-    } else if (data.playerNumber === 'Player3') {
+    } else if (socket.playerNumber === 'Player3') {
       room.leftPressed3 = true;
-    } else if (data.playerNumber === 'Player4') {
+    } else if (socket.playerNumber === 'Player4') {
       room.leftPressed4 = true;
     }
   });
   socket.on("rightKeyUp", (data) => {
     let room = rooms.get(data.roomName);
-    console.log(`${room.name} ${data.playerNumber} :rightKey is released`);
-    if (data.playerNumber === 'Player1') {
+    console.log(`${room.name} ${socket.playerNumber} :rightKey is released`);
+    if (socket.playerNumber === 'Player1') {
       room.rightPressed1 = false;
-    } else if (data.playerNumber === 'Player2') {
+    } else if (socket.playerNumber === 'Player2') {
       room.rightPressed2 = false;
-    } else if (data.playerNumber === 'Player3') {
+    } else if (socket.playerNumber === 'Player3') {
       room.rightPressed3 = false;
-    } else if (data.playerNumber === 'Player4') {
+    } else if (socket.playerNumber === 'Player4') {
       room.rightPressed4 = false;
     }
   });
   socket.on("leftKeyUp", (data) => {
     let room = rooms.get(data.roomName);
-    console.log(`${room.name} ${data.playerNumber} :leftKey is released`);
-    if (data.playerNumber === 'Player1') {
+    console.log(`${room.name} ${socket.playerNumber} :leftKey is released`);
+    if (socket.playerNumber === 'Player1') {
       room.leftPressed1 = false;
-    } else if (data.playerNumber === 'Player2') {
+    } else if (socket.playerNumber === 'Player2') {
       room.leftPressed2 = false;
-    } else if (data.playerNumber === 'Player3') {
+    } else if (socket.playerNumber === 'Player3') {
       room.leftPressed3 = false;
-    } else if (data.playerNumber === 'Player4') {
+    } else if (socket.playerNumber === 'Player4') {
       room.leftPressed4 = false;
     }
   });
@@ -188,8 +187,8 @@ io.on('connection', (socket) => {
     }
     console.log(`${socket.id} ${room} ${clientName} has disconnected`);
     // release playerNumber
-    rooms.get(room).players[playerNumber].isAvailable = true;
-    console.log(`${room} ${playerNumber} is available`);
+    rooms.get(room).players[socket.playerNumber].isAvailable = true;
+    console.log(`${room} ${socket.playerNumber} is available`);
     systemMessage = `${clientName} left the room. Chao.`;
     io.to(room).emit("showSystemMessage", { value: systemMessage });
   });

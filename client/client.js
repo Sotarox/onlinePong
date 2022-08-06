@@ -40,11 +40,6 @@ var scoreBlue = 0;
 var scoreRed = 0;
 var canvasMessage = '';
 
-//Get playerNumber
-SOCKET.on('setPlayerNumber', function (data) {
-    player.playerNumber = data.value;
-});
-
 //Start Button
 function btnStart() {
     SOCKET.emit("doStart", {
