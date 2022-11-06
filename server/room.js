@@ -1,6 +1,17 @@
-class Player{
-    constructor(){
+class Player {
+    constructor(x) {
         this.isAvailable = true;
+        this.isRightPressed = false;
+        this.isLeftPressed = false;
+        this.paddle = new Paddle(x);
+    }
+}
+
+class Paddle {
+    constructor(x) {
+        this.x = x;
+        this.height = 10;
+        this.width = 65;
     }
 }
 
@@ -21,53 +32,26 @@ class Room {
         this.ballY = 270 //initial y-coordiante. canvasHeight/2;
         this.balldx = 1; // how many pixels to move by a rendering
         this.balldy = -1;
-        //paddle1
-        this.paddleX = 160;
-        this.paddleHeight = 10;
-        this.paddleWidth = 65;
-        this.rightPressed1 = false;
-        this.leftPressed1 = false;
-        //paddle2
-        this.paddleX2 = 160;
-        this.paddleHeight2 = 10;
-        this.paddleWidth2 = 65;
-        this.rightPressed2 = false;
-        this.leftPressed2 = false;
-        //paddle3
-        this.paddleX3 = 240;
-        this.paddleHeight3 = 10;
-        this.paddleWidth3 = 65;
-        this.rightPressed3 = false;
-        this.leftPressed3 = false;
-        //paddle4
-        this.paddleX4 = 240;
-        this.paddleHeight4 = 10;
-        this.paddleWidth4 = 65;
-        this.rightPressed4 = false;
-        this.leftPressed4 = false;
         //players
         this.players = {
-            Player1: new Player(),
-            Player2: new Player(),
-            Player3: new Player(),
-            Player4: new Player()
+            'Player1': new Player(160),
+            'Player2': new Player(160),
+            'Player3': new Player(240),
+            'Player4': new Player(240)
         }
     }
     calculate() {
         if (this.calcSwitch == true) {
-            //ball
+            // if the ball hit the wall
             if (this.ballX + this.balldx > this.canvasWidth - this.ballRadius || this.ballX + this.balldx < this.ballRadius) {
-                this.balldx = -this.balldx;
+                this.balldx *= -1;
             }
+            // if the ball hit a paddle of P2/P4
             else if (this.ballY + this.balldy < this.ballRadius) {
-                if ((this.ballX > this.paddleX2 && this.ballX < this.paddleX2 + this.paddleWidth2) ||
-                    (this.ballX > this.paddleX4 && this.ballX < this.paddleX4 + this.paddleWidth4)) {
-                    this.balldy = -this.balldy;
-                    if (this.balldy > 0) {
-                        this.balldy += 0.5;
-                    } else {
-                        this.balldy -= 0.5;
-                    }
+                if ((this.ballX > this.players.Player2.paddle.x && this.ballX < this.players.Player2.paddle.x + this.players.Player2.paddle.width) ||
+                    (this.ballX > this.players.Player4.paddle.x && this.ballX < this.players.Player4.paddle.x + this.players.Player4.paddle.width)) {
+                    this.balldy *= -1;
+                    this.balldy > 0 ? this.balldy += 0.5 : this.balldy -= 0.5;
                 }
                 else {
                     this.scoreBlue += 1;
@@ -82,15 +66,12 @@ class Room {
                     }
                 }
             }
-            else if (this.ballY + this.balldy > this.canvasHeight - this.ballRadius) {//unten blue
-                if ((this.ballX > this.paddleX && this.ballX < this.paddleX + this.paddleWidth) ||
-                    (this.ballX > this.paddleX3 && this.ballX < this.paddleX3 + this.paddleWidth3)) {
-                    this.balldy = -this.balldy;
-                    if (this.balldy > 0) {
-                        this.balldy += 0.5;
-                    } else {
-                        this.balldy -= 0.5;
-                    }
+            // if the ball hit a paddle of P1/P3
+            else if (this.ballY + this.balldy > this.canvasHeight - this.ballRadius) {
+                if ((this.ballX > this.players.Player1.paddle.x && this.ballX < this.players.Player1.paddle.x + this.players.Player1.paddle.width) ||
+                    (this.ballX > this.players.Player3.paddle.x && this.ballX < this.players.Player3.paddle.x + this.players.Player3.paddle.width)) {
+                    this.balldy *= -1;
+                    this.balldy > 0 ? this.balldy += 0.5 : this.balldy -= 0.5;
                 }
                 else {
                     this.scoreRed += 1;
@@ -110,40 +91,23 @@ class Room {
             }
             this.ballX += this.balldx;
             this.ballY += this.balldy;
-
-            // paddle move by players input
-            if (this.rightPressed1 && this.paddleX < this.canvasWidth - this.paddleWidth) {
-                this.paddleX += 5;
-            }
-            if (this.leftPressed1 && this.paddleX > 0) {
-                this.paddleX -= 5;
-            }
-            if (this.rightPressed2 && this.paddleX2 < this.canvasWidth - this.paddleWidth2) {
-                this.paddleX2 += 5;
-            }
-            if (this.leftPressed2 && this.paddleX2 > 0) {
-                this.paddleX2 -= 5;
-            }
-            if (this.rightPressed3 && this.paddleX3 < this.canvasWidth - this.paddleWidth3) {
-                this.paddleX3 += 5;
-            }
-            if (this.leftPressed3 && this.paddleX3 > 0) {
-                this.paddleX3 -= 5;
-            }
-            if (this.rightPressed4 && this.paddleX4 < this.canvasWidth - this.paddleWidth4) {
-                this.paddleX4 += 5;
-            }
-            if (this.leftPressed4 && this.paddleX4 > 0) {
-                this.paddleX4 -= 5;
-            }
+            
+            // Key handling
+            Object.keys(this.players).forEach(n => {
+                if (this.players[n].isRightPressed && this.players[n].paddle.x < this.canvasWidth - this.players[n].paddle.width) {
+                    this.players[n].paddle.x += 5;
+                } else if (this.players[n].isLeftPressed && this.players[n].paddle.x > 0) {
+                    this.players[n].paddle.x -= 5;
+                }
+            });
         }
     }
 
     reset() {
         this.scoreBlue = 0;
         this.scoreRed = 0;
-        this.ballX = 240; 
-        this.ballY = 270; 
+        this.ballX = 240;
+        this.ballY = 270;
         this.balldy = -2;
         this.gameOverSwitch = false;
         this.calcSwitch = true;
