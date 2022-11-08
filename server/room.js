@@ -1,4 +1,5 @@
 class Player {
+    // x: number. initial x-coordinate of the paddle
     constructor(x) {
         this.isAvailable = true;
         this.isRightPressed = false;
@@ -42,53 +43,28 @@ class Room {
     }
     calculate() {
         if (this.calcSwitch == true) {
-            // if the ball hit the wall
-            if (this.ballX + this.balldx > this.canvasWidth - this.ballRadius || this.ballX + this.balldx < this.ballRadius) {
+            if (this.isBallTouchTheSideWall()) {
                 this.balldx *= -1;
             }
-            // if the ball hit a paddle of P2/P4
-            else if (this.ballY + this.balldy < this.ballRadius) {
-                if ((this.ballX > this.players.Player2.paddle.x && this.ballX < this.players.Player2.paddle.x + this.players.Player2.paddle.width) ||
-                    (this.ballX > this.players.Player4.paddle.x && this.ballX < this.players.Player4.paddle.x + this.players.Player4.paddle.width)) {
-                    this.balldy *= -1;
-                    this.balldy > 0 ? this.balldy += 0.5 : this.balldy -= 0.5;
+            else if (this.isBallPassingUpperEdge()) {
+                if ((this.isBallTouchPaddle(this.players.Player2)) || (this.isBallTouchPaddle(this.players.Player4))) {
+                    this.ballReflectOnPaddle();
                 }
                 else {
                     this.scoreBlue += 1;
-                    this.scoreRenewSwitch = true;
-                    if (this.scoreBlue === 3) {
-                        this.calcSwitch = false;
-                        this.ballX = 500; //ball goes out from the canvas
-                        this.gameOverSwitch = true;
-                    }
-                    else {
-                        this.ballX = 240; this.ballY = 270; this.balldy = 2;
-                    }
+                    this.processAfterScore();
                 }
             }
-            // if the ball hit a paddle of P1/P3
-            else if (this.ballY + this.balldy > this.canvasHeight - this.ballRadius) {
-                if ((this.ballX > this.players.Player1.paddle.x && this.ballX < this.players.Player1.paddle.x + this.players.Player1.paddle.width) ||
-                    (this.ballX > this.players.Player3.paddle.x && this.ballX < this.players.Player3.paddle.x + this.players.Player3.paddle.width)) {
-                    this.balldy *= -1;
-                    this.balldy > 0 ? this.balldy += 0.5 : this.balldy -= 0.5;
+            else if (this.isBallPassingLowerEdge()) {
+                if ((this.isBallTouchPaddle(this.players.Player1)) || (this.isBallTouchPaddle(this.players.Player3))) {
+                    this.ballReflectOnPaddle();
                 }
                 else {
                     this.scoreRed += 1;
-                    this.scoreRenewSwitch = true;
-                    //io.sockets.emit("renewScore",{ scoreBlue:this.scoreBlue, scoreRed:this.scoreRed } );
-                    if (this.scoreRed == 3) {
-                        this.calcSwitch = false;
-                        this.ballX = 500; //ball goes out from the canvas
-                        this.gameOverSwitch = true;
-                        // var systemMessage = 'Great! Player2(Red) Won!'
-                        // io.to(this.name).emit("showSystemMessage",{value:systemMessage});
-                    }
-                    else {
-                        this.ballX = 240; this.ballY = 270; this.balldy = -2;
-                    }
+                    this.processAfterScore();
                 }
             }
+
             this.ballX += this.balldx;
             this.ballY += this.balldy;
             
@@ -101,6 +77,47 @@ class Room {
                 }
             });
         }
+    }
+
+    isBallTouchTheSideWall() {
+        if (this.ballX + this.balldx > this.canvasWidth - this.ballRadius || this.ballX + this.balldx < this.ballRadius) return true;
+        else return false;
+    }
+
+    isBallPassingUpperEdge(){
+        if (this.ballY + this.balldy < this.ballRadius) return true;
+        else return false;
+    }
+
+    isBallPassingLowerEdge(){
+        if (this.ballY + this.balldy > this.canvasHeight - this.ballRadius) return true;
+        else return false;
+    }
+
+    isBallTouchPaddle(player){
+        const paddle = player.paddle;
+        if (this.ballX > paddle.x && this.ballX < paddle.x + paddle.width) return true;
+        else return false;
+    }
+
+    // Judge if a team got 3 points. If so, game is over. 
+    processAfterScore(){
+        this.scoreRenewSwitch = true;
+        if (this.scoreBlue == 3 || this.scoreRed == 3) {
+            this.calcSwitch = false;
+            this.ballX = 500; //ball goes out from the canvas
+            this.gameOverSwitch = true;
+        }
+        else {
+            this.ballX = 240; 
+            this.ballY = 270; 
+            this.balldy > 0 ? this.balldy = -2 : this.balldy = 2;
+        }
+    }
+
+    ballReflectOnPaddle(){
+        this.balldy *= -1;
+        this.balldy > 0 ? this.balldy += 0.5 : this.balldy -= 0.5;
     }
 
     reset() {
