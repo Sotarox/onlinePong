@@ -94,10 +94,6 @@ io.on('connection', (socket) => {
       {
         ballX: room.ballX,
         ballY: room.ballY,
-        // paddleX: room.paddleX,
-        // paddleX2: room.paddleX2,
-        // paddleX3: room.paddleX3,
-        // paddleX4: room.paddleX4
         paddleX: room.players.Player1.paddle.x,
         paddleX2: room.players.Player2.paddle.x,
         paddleX3: room.players.Player3.paddle.x,
@@ -106,26 +102,16 @@ io.on('connection', (socket) => {
   });
 
   //Control paddles
-  socket.on("rightKeyDown", (data) => {
+  socket.on("keyInput", (data) => {
+    const {key, when} = data;
     let room = rooms.get(data.roomName);
-    console.log(`${room.name} ${socket.playerNumber} :rightKey is pressed`);
-    room.players[socket.playerNumber].isRightPressed = true;
+    console.log(`${room.name} ${socket.playerNumber} :${data.key} key is ${data.when}`);
+    if (key === "left" && when === "down") room.players[socket.playerNumber].isLeftPressed = true;
+    else if (key === "right" && when === "down") room.players[socket.playerNumber].isRightPressed = true;
+    else if (key === "left" && when === "up") room.players[socket.playerNumber].isLeftPressed = false;
+    else if (key === "right" && when === "up") room.players[socket.playerNumber].isRightPressed = false;
   });
-  socket.on("leftKeyDown", (data) => {
-    let room = rooms.get(data.roomName);
-    console.log(`${room.name} ${socket.playerNumber} :leftKey is pressed`);
-    room.players[socket.playerNumber].isLeftPressed = true;
-  });
-  socket.on("rightKeyUp", (data) => {
-    let room = rooms.get(data.roomName);
-    console.log(`${room.name} ${socket.playerNumber} :rightKey is released`);
-    room.players[socket.playerNumber].isRightPressed = false;
-  });
-  socket.on("leftKeyUp", (data) => {
-    let room = rooms.get(data.roomName);
-    console.log(`${room.name} ${socket.playerNumber} :leftKey is released`);
-    room.players[socket.playerNumber].isLeftPressed = false;
-  });
+
   //Pause Button
   socket.on("doPause", (data) => {
     let room = rooms.get(data.roomName);

@@ -1,24 +1,28 @@
 function keyDownHandler(e) {
-    if (e.keyCode == 39) {
-        SOCKET.emit("rightKeyDown", {
-            roomName: player.room,
-        });
-    } else if (e.keyCode == 37) {
-        SOCKET.emit("leftKeyDown", {
+    let key;
+    if (e.keyCode == 37) key = "left";
+    else if ((e.keyCode == 39)) key = "right"
+    if (key){
+        SOCKET.emit("keyInput", {
+            key: key,
+            when: "down",
             roomName: player.room,
         });
     }
 }
+
 function keyUpHandler(e) {
-    if (e.keyCode == 39) {
-        SOCKET.emit("rightKeyUp", {
-            roomName: player.room,
-        });
-    } else if (e.keyCode == 37) {
-        SOCKET.emit("leftKeyUp", {
+    let key;
+    if (e.keyCode == 37) key = "left";
+    else if ((e.keyCode == 39)) key = "right"
+    if (key){
+        SOCKET.emit("keyInput", {
+            key: key,
+            when: "up",
             roomName: player.room,
         });
     }
 }
+
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
