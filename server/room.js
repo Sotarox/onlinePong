@@ -1,16 +1,24 @@
 class Player {
     // x: number. initial x-coordinate of the paddle
-    constructor(x) {
+    constructor(paddlePosX, paddlePosY) {
         this.isAvailable = true;
         this.isRightPressed = false;
         this.isLeftPressed = false;
-        this.paddle = new Paddle(x);
+        this.paddle = new Paddle(paddlePosX, paddlePosY);
+        this.touchState = {
+            posX: 0,
+            posY: 0,
+            when: "off", // on|move|off
+            isTouchOnPaddle: false
+        };
     }
 }
 
+
 class Paddle {
-    constructor(x) {
+    constructor(x, y) {
         this.x = x;
+        this.y = y;
         this.height = 10;
         this.width = 65;
     }
@@ -35,14 +43,20 @@ class Room {
         this.balldy = -1;
         //players
         this.players = {
-            'Player1': new Player(160),
-            'Player2': new Player(160),
-            'Player3': new Player(240),
-            'Player4': new Player(240)
+            'Player1': new Player(160, 530),
+            'Player2': new Player(160, 0),
+            'Player3': new Player(240, 530),
+            'Player4': new Player(240, 0)
+        }
+        // margin to detect if touch is on the paddle
+        this.touchHandle = {
+            marginPaddleWidth: 10,
+            marginPaddleHeight: 10
         }
     }
     calculate() {
-        if (this.calcSwitch == true) {
+        // if (this.calcSwitch == true) {
+        if (true) {
             if (this.isBallTouchTheSideWall()) {
                 this.balldx *= -1;
             }
@@ -67,7 +81,7 @@ class Room {
 
             this.ballX += this.balldx;
             this.ballY += this.balldy;
-            
+
             // Key handling
             Object.keys(this.players).forEach(n => {
                 if (this.players[n].isRightPressed && this.players[n].paddle.x < this.canvasWidth - this.players[n].paddle.width) {
@@ -76,7 +90,52 @@ class Room {
                     this.players[n].paddle.x -= 5;
                 }
             });
+
+            // Touch handling
+            Object.keys(this.players).forEach(n => {
+                let { posX, posY, when, isTouchOnPaddle } = this.players[n].touchState;
+                // console.log("Room: detected Touch", when, posX, posY, isTouchOnPaddle)
+                switch (when) {
+                    case "on":
+                        isTouchOnPaddle = this.judgeIsTouchOnPaddle(posX, posY, this.players[n].paddle);
+                        console.log("Room: on isTouchOnPaddle", isTouchOnPaddle)
+                        if (isTouchOnPaddle) {
+                            // const newPosX = this.restrictPaddlePositionInCanvas(posX);
+                            // this.players[n].paddle.x = newPosX;
+                            this.players[n].paddle.x = posX;
+                        }
+                        break;
+                    case "move":
+                        console.log("Room: on isTouchOnPaddle", isTouchOnPaddle)
+                        if (isTouchOnPaddle) {
+                            // const newPosX = this.restrictPaddlePositionInCanvas(posX);
+                            // this.players[n].paddle.x = newPosX;
+                            this.players[n].paddle.x = posX;
+                        }
+                        break;
+                    case "off":
+                        isTouchOnPaddle = false;
+                        break;
+                    default:
+                        break;
+
+                }
+            });
+
         }
+    }
+
+    judgeIsTouchOnPaddle(touchX, touchY, paddle) {
+        const marginWidth = this.touchHandle.marginPaddleWidth;
+        const marginHeight = this.touchHandle.marginPaddleHeight;
+        if (paddle.x - marginWidth < touchX &&
+            touchX < paddle.x + paddle.width + marginWidth
+            // &&
+            // paddle.y - marginHeight < touchY &&
+            // touchY < paddle.y + paddle.height + marginHeight
+        ) {
+            return true;
+        } else return false;
     }
 
     isBallTouchTheSideWall() {
@@ -84,24 +143,24 @@ class Room {
         else return false;
     }
 
-    isBallPassingUpperEdge(){
+    isBallPassingUpperEdge() {
         if (this.ballY + this.balldy < this.ballRadius) return true;
         else return false;
     }
 
-    isBallPassingLowerEdge(){
+    isBallPassingLowerEdge() {
         if (this.ballY + this.balldy > this.canvasHeight - this.ballRadius) return true;
         else return false;
     }
 
-    isBallTouchPaddle(player){
+    isBallTouchPaddle(player) {
         const paddle = player.paddle;
         if (this.ballX > paddle.x && this.ballX < paddle.x + paddle.width) return true;
         else return false;
     }
 
     // Judge if a team got 3 points. If so, game is over. 
-    processAfterScore(){
+    processAfterScore() {
         this.scoreRenewSwitch = true;
         if (this.scoreBlue == 3 || this.scoreRed == 3) {
             this.calcSwitch = false;
@@ -109,13 +168,13 @@ class Room {
             this.gameOverSwitch = true;
         }
         else {
-            this.ballX = 240; 
-            this.ballY = 270; 
+            this.ballX = 240;
+            this.ballY = 270;
             this.balldy > 0 ? this.balldy = -2 : this.balldy = 2;
         }
     }
 
-    ballReflectOnPaddle(){
+    ballReflectOnPaddle() {
         this.balldy *= -1;
         this.balldy > 0 ? this.balldy += 0.5 : this.balldy -= 0.5;
     }

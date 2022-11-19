@@ -49,10 +49,14 @@ function render() {
     SOCKET.on('setCoordinates', function (data) {
         ball1.positionX = data.ballX;
         ball1.positionY = data.ballY;
-        paddle1.positionX = data.paddleX;
-        paddle2.positionX = data.paddleX2;
-        paddle3.positionX = data.paddleX3;
-        paddle4.positionX = data.paddleX4;
+        paddle1.positionX = data.player1PaddleX;
+        paddle1.positionY = data.player1PaddleY;
+        paddle2.positionX = data.player2PaddleX;
+        paddle2.positionY = data.player2PaddleY;
+        paddle3.positionX = data.player3PaddleX;
+        paddle3.positionY = data.player3PaddleY;
+        paddle4.positionX = data.player4PaddleX;
+        paddle4.positionY = data.player4PaddleY;
     });
     drawCanvasMessage();
     drawBall(ball1);

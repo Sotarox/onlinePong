@@ -94,14 +94,18 @@ io.on('connection', (socket) => {
       {
         ballX: room.ballX,
         ballY: room.ballY,
-        paddleX: room.players.Player1.paddle.x,
-        paddleX2: room.players.Player2.paddle.x,
-        paddleX3: room.players.Player3.paddle.x,
-        paddleX4: room.players.Player4.paddle.x
+        player1PaddleX: room.players.Player1.paddle.x,
+        player1PaddleY: room.players.Player1.paddle.y,
+        player2PaddleX: room.players.Player2.paddle.x,
+        player2PaddleY: room.players.Player2.paddle.y,
+        player3PaddleX: room.players.Player3.paddle.x,
+        player3PaddleY: room.players.Player3.paddle.y,
+        player4PaddleX: room.players.Player4.paddle.x,
+        player4PaddleY: room.players.Player4.paddle.y
       });
   });
 
-  //Control paddles
+  // Key input handling
   socket.on("keyInput", (data) => {
     const {key, when} = data;
     let room = rooms.get(data.roomName);
@@ -110,6 +114,16 @@ io.on('connection', (socket) => {
     else if (key === "right" && when === "down") room.players[socket.playerNumber].isRightPressed = true;
     else if (key === "left" && when === "up") room.players[socket.playerNumber].isLeftPressed = false;
     else if (key === "right" && when === "up") room.players[socket.playerNumber].isRightPressed = false;
+  });
+
+  // Touch handling from tablets/smartphones
+  socket.on("touch", (data) => {
+    const {posX, posY, when} = data;
+    let room = rooms.get(data.roomName);
+    console.log(`Server: ${room.name} ${socket.playerNumber} -- Touch ${when} (${posX},${posY})`);
+    room.players[socket.playerNumber].touchState.posX = posX;
+    room.players[socket.playerNumber].touchState.posY = posY;
+    room.players[socket.playerNumber].touchState.when = when;
   });
 
   //Pause Button
