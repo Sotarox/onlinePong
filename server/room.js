@@ -6,14 +6,10 @@ class Player {
         this.isLeftPressed = false;
         this.paddle = new Paddle(paddlePosX, paddlePosY);
         this.touchState = {
-            posX: 0,
-            posY: 0,
-            when: "off", // on|move|off
             isTouchOnPaddle: false
-        };
+        }
     }
 }
-
 
 class Paddle {
     constructor(x, y) {
@@ -55,8 +51,7 @@ class Room {
         }
     }
     calculate() {
-        // if (this.calcSwitch == true) {
-        if (true) {
+        if (this.calcSwitch == true) {
             if (this.isBallTouchTheSideWall()) {
                 this.balldx *= -1;
             }
@@ -91,51 +86,48 @@ class Room {
                 }
             });
 
-            // Touch handling
-            Object.keys(this.players).forEach(n => {
-                let { posX, posY, when, isTouchOnPaddle } = this.players[n].touchState;
-                // console.log("Room: detected Touch", when, posX, posY, isTouchOnPaddle)
-                switch (when) {
-                    case "on":
-                        isTouchOnPaddle = this.judgeIsTouchOnPaddle(posX, posY, this.players[n].paddle);
-                        console.log("Room: on isTouchOnPaddle", isTouchOnPaddle)
-                        if (isTouchOnPaddle) {
-                            // const newPosX = this.restrictPaddlePositionInCanvas(posX);
-                            // this.players[n].paddle.x = newPosX;
-                            this.players[n].paddle.x = posX;
-                        }
-                        break;
-                    case "move":
-                        console.log("Room: on isTouchOnPaddle", isTouchOnPaddle)
-                        if (isTouchOnPaddle) {
-                            // const newPosX = this.restrictPaddlePositionInCanvas(posX);
-                            // this.players[n].paddle.x = newPosX;
-                            this.players[n].paddle.x = posX;
-                        }
-                        break;
-                    case "off":
-                        isTouchOnPaddle = false;
-                        break;
-                    default:
-                        break;
+        }
+    } // calcurate() END
 
+    onHandleTouch(playerNumber, posX, when) {
+        let state = this.players[playerNumber].touchState;
+        let paddle = this.players[playerNumber].paddle;
+        switch (when) {
+            case "on":
+                state.isTouchOnPaddle = this.judgeIsTouchOnPaddle(posX, paddle);
+                console.log("Room: On, isTouchOnPaddle:", state.isTouchOnPaddle)
+                if (state.isTouchOnPaddle) {
+                    paddle.x = this.restrictPosXInCanvas(posX, paddle);
                 }
-            });
+                break;
+            case "move":
+                console.log("Room: Move, isTouchOnPaddle:", state.isTouchOnPaddle);
+                if (state.isTouchOnPaddle) {
+                    paddle.x = this.restrictPosXInCanvas(posX, paddle);
+                }
+                break;
+            case "off":
+                console.log("Room: Off")
+                state.isTouchOnPaddle = false;
+                break;
+            default:
+                break;
 
         }
     }
 
-    judgeIsTouchOnPaddle(touchX, touchY, paddle) {
+    restrictPosXInCanvas (x ,paddle) {
+        if (x < 0) return 0; 
+        if (x > this.canvasWidth - paddle.width)
+            return this.canvasWidth - paddle.width;
+        return x;
+    }
+
+    // Y axis is currently not used for detection
+    judgeIsTouchOnPaddle(touchX, paddle) {
         const marginWidth = this.touchHandle.marginPaddleWidth;
-        const marginHeight = this.touchHandle.marginPaddleHeight;
-        if (paddle.x - marginWidth < touchX &&
-            touchX < paddle.x + paddle.width + marginWidth
-            // &&
-            // paddle.y - marginHeight < touchY &&
-            // touchY < paddle.y + paddle.height + marginHeight
-        ) {
-            return true;
-        } else return false;
+        return paddle.x - marginWidth < touchX && 
+            touchX < paddle.x + paddle.width + marginWidth;
     }
 
     isBallTouchTheSideWall() {

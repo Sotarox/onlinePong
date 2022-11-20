@@ -23,6 +23,7 @@ server.listen(POST, () => {
 ////Game
 //import Room class
 const Room = require("./server/room.js");
+const { exit } = require('process');
 const rooms = new Map([
   ['room01', new Room('room01')],
   ['room02', new Room('room02')],
@@ -118,12 +119,15 @@ io.on('connection', (socket) => {
 
   // Touch handling from tablets/smartphones
   socket.on("touch", (data) => {
+    // Guard after server is down and player remains in the room.
+    if (!socket.playerNumber) {
+      console.log("Old Player remains. He need to reload browser")
+      return;
+    }
     const {posX, posY, when} = data;
     let room = rooms.get(data.roomName);
     console.log(`Server: ${room.name} ${socket.playerNumber} -- Touch ${when} (${posX},${posY})`);
-    room.players[socket.playerNumber].touchState.posX = posX;
-    room.players[socket.playerNumber].touchState.posY = posY;
-    room.players[socket.playerNumber].touchState.when = when;
+    room.onHandleTouch(socket.playerNumber, posX, when);
   });
 
   //Pause Button
