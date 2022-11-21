@@ -6,10 +6,14 @@
   "dependencies": {
     "express": "^4.18.1",
     "path": "^0.12.7",
+    "pm2": "^5.2.2",
     "socket.io": "^4.5.1"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "watch": "pm2 start --no-daemon server.js --watch",
+    "stop": "pm2 stop server.js",
+    "ls": "pm2 ls"
   },
   "engines": {
     "node": "16.11.1",
