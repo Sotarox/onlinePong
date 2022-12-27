@@ -6,9 +6,10 @@ canvas {
 
 .gameButtonsWrapper {
     margin: 0 auto;
-    width: 470px;
+    width: 360px;
     height: 20px;
-    padding: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     background: #333;
     display: flex;
     justify-content: center;
@@ -20,10 +21,10 @@ input.gameButtons {
 
 .form-inline {
     font-family: 'Orbitron', sans-serif;
-    width: 470px;
+    width: 360px;
     height: 35px;
-    margin: 2px;
-    padding: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     background-color: #888;
 }
 
@@ -56,7 +57,7 @@ input.gameButtons {
     font-family: 'Orbitron', sans-serif;
     margin: auto;
     padding: 10px;
-    width: 480px;
+    width: 360px;
     display: flex;
     flex-direction: column;
     background-color: #888;
@@ -64,13 +65,14 @@ input.gameButtons {
 
 #systemMessageDiv {
     margin: auto;
-    width: 480px;
+    width: 360px;
     font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
 }
 
 div.grayBox {
     margin: auto;
-    width: 480px;
+    width: 360px;
     display: flex;
 }
 

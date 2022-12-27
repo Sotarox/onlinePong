@@ -29,8 +29,8 @@ class Room {
         this.scoreBlue = 0;
         this.scoreRed = 0;
         //canvas & score
-        this.canvasWidth = 480;
-        this.canvasHeight = 540;
+        this.canvasWidth = 360;
+        this.canvasHeight = 480;
         //ball
         this.ballRadius = 10;
         this.ballX = 240 //initial x-coordinate. canvasWidth/2;
@@ -39,9 +39,9 @@ class Room {
         this.balldy = -1;
         //players
         this.players = {
-            'Player1': new Player(160, 530),
+            'Player1': new Player(160, this.canvasHeight - 10),
             'Player2': new Player(160, 0),
-            'Player3': new Player(240, 530),
+            'Player3': new Player(240, this.canvasHeight - 10),
             'Player4': new Player(240, 0)
         }
         // margin to detect if touch is on the paddle
@@ -112,7 +112,6 @@ class Room {
                 break;
             default:
                 break;
-
         }
     }
 

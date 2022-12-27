@@ -29,14 +29,14 @@ function drawCanvasMessage() {
     const ctx = document.getElementById('canvas').getContext('2d');
     ctx.fillStyle = COLORS.TEXT_GRAY;
     if (canvasMessage === 'Start') {
-        ctx.font = "120px Orbitron";
-        ctx.fillText(canvasMessage, 80, 300);
+        ctx.font = "80px Orbitron";
+        ctx.fillText(canvasMessage, 80, 260);
     } else if (canvasMessage === 'Pause') {
-        ctx.font = "100px Orbitron";
-        ctx.fillText(canvasMessage, 80, 300);
+        ctx.font = "60px Orbitron";
+        ctx.fillText(canvasMessage, 80, 260);
     } else { //When Game is over
-        ctx.font = "26px Orbitron";
-        ctx.fillText(canvasMessage, 25, 300);
+        ctx.font = "20px Orbitron";
+        ctx.fillText(canvasMessage, 20, 260);
     }
 }
 
