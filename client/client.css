@@ -7,7 +7,7 @@ canvas {
     margin-right: auto;
 }
 
-.gameButtonsWrapper {
+.gameButtons {
     margin: 0 auto;
     width: 360px;
     height: 20px;
@@ -18,8 +18,9 @@ canvas {
     justify-content: center;
 }
 
-input.gameButtons {
+input.gameButton {
     font-family: 'Orbitron', sans-serif;
+    margin: 0px 10px;
 }
 
 .form-inline {
@@ -67,7 +68,7 @@ input.gameButtons {
 }
 
 #systemMessageDiv {
-    margin: auto;
+    margin: 5px auto;
     width: 360px;
     font-family: 'Press Start 2P', cursive;
     font-size: 10px;
