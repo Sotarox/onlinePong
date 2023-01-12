@@ -34,9 +34,7 @@ var paddle2 = new Paddle(0, 0, COLORS.PLAYER_RED);
 var paddle3 = new Paddle(0, document.getElementById("canvas").height - 10, COLORS.PLAYER_GREEN);
 var paddle4 = new Paddle(0, 0, COLORS.PLAYER_PINK)
 
-//score
-var scoreBlue = 0;
-var scoreRed = 0;
+// canvasMessage
 var canvasMessage = '';
 
 //Start Button
@@ -53,8 +51,6 @@ function btnStart() {
     setTimeout(() => { if (canvasMessage === 'Start') canvasMessage = ''; }, 2000);
 }
 SOCKET.on('setStart', function (data) {
-    scoreBlue = data.scoreBlue;
-    scoreRed = data.scoreRed;
     document.getElementById("btnStart").disabled = "disabled";
     document.getElementById("btnPause").disabled = "";
     document.getElementById("btnReset").disabled = "";
@@ -85,9 +81,4 @@ SOCKET.on('showSystemMessage', function (data) {
 SOCKET.on('showCanvasMessage', function (data) {
     console.log(data.value);
     canvasMessage = data.value;
-});
-//score
-SOCKET.on('renewScore', function (data) {
-    scoreBlue = data.scoreBlue;
-    scoreRed = data.scoreRed;
 });

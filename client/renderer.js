@@ -1,3 +1,6 @@
+var scoreBlue = 0;
+var scoreRed = 0;
+
 function drawBall(ball) {
     const ctx = document.getElementById('canvas').getContext('2d');
     ctx.beginPath();
@@ -32,7 +35,7 @@ function drawGoalLines() {
     ctx.closePath();
 }
 
-function drawScore() {
+function drawScore(scoreBlue, scoreRed) {
     const ctx = document.getElementById('canvas').getContext('2d');
     ctx.font = "14px Orbitron";
     ctx.fillStyle = COLORS.PLAYER_BLUE;
@@ -73,6 +76,8 @@ function render() {
         paddle3.positionY = data.player3PaddleY;
         paddle4.positionX = data.player4PaddleX;
         paddle4.positionY = data.player4PaddleY;
+        scoreBlue = data.scoreBlue;
+        scoreRed = data.scoreRed;
     });
     drawCanvasMessage();
     drawGoalLines();
@@ -81,7 +86,7 @@ function render() {
     drawPaddle(paddle2);
     drawPaddle(paddle3);
     drawPaddle(paddle4);
-    drawScore();
+    drawScore(scoreBlue, scoreRed);
     // Render animation repeatedly by 60fps
     requestAnimationFrame(render);
 }

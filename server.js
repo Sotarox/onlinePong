@@ -102,7 +102,9 @@ io.on('connection', (socket) => {
         player3PaddleX: room.players.Player3.paddle.x,
         player3PaddleY: room.players.Player3.paddle.y,
         player4PaddleX: room.players.Player4.paddle.x,
-        player4PaddleY: room.players.Player4.paddle.y
+        player4PaddleY: room.players.Player4.paddle.y,
+        scoreBlue: room.scoreBlue,
+        scoreRed: room.scoreRed
       });
   });
 
@@ -144,7 +146,6 @@ io.on('connection', (socket) => {
     let room = rooms.get(data.roomName);
     room.reset();
     console.log(`${room.name} Reset Button is pressed`);
-    io.to(data.value).emit("renewScore", { scoreBlue: 0, scoreRed: 0 });
   });
   //chat
   socket.on("client_to_server_chat", (data) => {
