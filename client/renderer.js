@@ -16,13 +16,29 @@ function drawPaddle(paddle) {
     ctx.closePath();
 }
 
+function drawGoalLines() {
+    const ctx = document.getElementById('canvas').getContext('2d');
+    // Lower line (P1 & P3)
+    ctx.beginPath();
+    ctx.rect(0, 0, 360, 50);
+    ctx.fillStyle = COLORS.LINE_GRAY;
+    ctx.fill();
+    ctx.closePath();
+    // Upper line (P2 & P4)
+    ctx.beginPath();
+    ctx.rect(0, 430, 360, 480);
+    ctx.fillStyle = COLORS.LINE_GRAY;
+    ctx.fill();
+    ctx.closePath();
+}
+
 function drawScore() {
     const ctx = document.getElementById('canvas').getContext('2d');
     ctx.font = "14px Orbitron";
     ctx.fillStyle = COLORS.PLAYER_BLUE;
-    ctx.fillText("P1(Blue) & P3(Green): " + scoreBlue, 8, 25);
+    ctx.fillText("P1(Blue) & P3(Green): " + scoreBlue, 8, 460);
     ctx.fillStyle = COLORS.PLAYER_RED;
-    ctx.fillText("P2(Red) & P3(Pink): " + scoreRed, 8, 45);
+    ctx.fillText("P2(Red) & P3(Pink): " + scoreRed, 8, 25);
 }
 
 function drawCanvasMessage() {
@@ -59,6 +75,7 @@ function render() {
         paddle4.positionY = data.player4PaddleY;
     });
     drawCanvasMessage();
+    drawGoalLines();
     drawBall(ball1);
     drawPaddle(paddle1);
     drawPaddle(paddle2);

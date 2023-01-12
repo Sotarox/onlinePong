@@ -1,3 +1,7 @@
+const PADDLE_HEIGHT = 10;
+const PADDLE_WIDTH = 65;
+const SWIPE_SPACE_HEIGHT = 50;
+
 class Player {
     // x: number. initial x-coordinate of the paddle
     constructor(paddlePosX, paddlePosY) {
@@ -15,8 +19,8 @@ class Paddle {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.height = 10;
-        this.width = 65;
+        this.height = PADDLE_HEIGHT;
+        this.width = PADDLE_WIDTH;
     }
 }
 
@@ -39,10 +43,10 @@ class Room {
         this.balldy = -1;
         //players
         this.players = {
-            'Player1': new Player(160, this.canvasHeight - 10),
-            'Player2': new Player(160, 0),
-            'Player3': new Player(240, this.canvasHeight - 10),
-            'Player4': new Player(240, 0)
+            'Player1': new Player(160, this.canvasHeight - PADDLE_HEIGHT - SWIPE_SPACE_HEIGHT),
+            'Player2': new Player(160, SWIPE_SPACE_HEIGHT),
+            'Player3': new Player(240, this.canvasHeight - PADDLE_HEIGHT - SWIPE_SPACE_HEIGHT),
+            'Player4': new Player(240, SWIPE_SPACE_HEIGHT)
         }
         // margin to detect if touch is on the paddle
         this.touchHandle = {
@@ -135,12 +139,12 @@ class Room {
     }
 
     isBallPassingUpperEdge() {
-        if (this.ballY + this.balldy < this.ballRadius) return true;
+        if (this.ballY + this.balldy < this.ballRadius + SWIPE_SPACE_HEIGHT) return true;
         else return false;
     }
 
     isBallPassingLowerEdge() {
-        if (this.ballY + this.balldy > this.canvasHeight - this.ballRadius) return true;
+        if (this.ballY + this.balldy > this.canvasHeight - this.ballRadius - SWIPE_SPACE_HEIGHT) return true;
         else return false;
     }
 

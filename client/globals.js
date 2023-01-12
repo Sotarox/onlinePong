@@ -7,4 +7,5 @@ const COLORS = {
     PLAYER_PINK: '#FFABCE',
     BALL_GRAY: '#AAAAAA',
     TEXT_GRAY: '#DDDDDD',
+    LINE_GRAY: '#DDDDDD'
 }

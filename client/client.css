@@ -1,7 +1,10 @@
 canvas {
     background: #eee;
     display: block;
-    margin: 0 auto;
+    margin-top: 15px;
+    margin-bottom: 0px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .gameButtonsWrapper {
