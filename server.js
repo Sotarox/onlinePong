@@ -80,6 +80,9 @@ io.on('connection', (socket) => {
       systemMessage = `${data.clientName} logged in as a Audience`;
     }
     io.to(data.room).emit("showSystemMessage", { value: systemMessage });
+    // When game was already started by another player, trigger rendering:
+    // if (room.calcSwitch) {} 
+    io.to(socket.id).emit("startRendering");
   });
   //Start Button
   socket.on("doStart", (data) => {

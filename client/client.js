@@ -37,6 +37,10 @@ var paddle4 = new Paddle(0, 0, COLORS.PLAYER_PINK)
 // canvasMessage
 var canvasMessage = '';
 
+SOCKET.on('startRendering', function (data) {
+    render();
+});
+
 //Start Button
 function btnStart() {
     SOCKET.emit("doStart", {
@@ -54,7 +58,6 @@ SOCKET.on('setStart', function (data) {
     document.getElementById("btnStart").disabled = "disabled";
     document.getElementById("btnPause").disabled = "";
     document.getElementById("btnReset").disabled = "";
-    render();
 });
 
 function btnPause() {
