@@ -53,6 +53,8 @@ class Room {
             marginPaddleWidth: 10,
             marginPaddleHeight: 10
         }
+        // pause button state
+        this.isPauseOn = false;
     }
     calculate() {
         if (this.calcSwitch == true) {

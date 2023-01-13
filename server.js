@@ -80,8 +80,6 @@ io.on('connection', (socket) => {
       systemMessage = `${data.clientName} logged in as a Audience`;
     }
     io.to(data.room).emit("showSystemMessage", { value: systemMessage });
-    // When game was already started by another player, trigger rendering:
-    // if (room.calcSwitch) {} 
     io.to(socket.id).emit("startRendering");
   });
   //Start Button
@@ -137,13 +135,19 @@ io.on('connection', (socket) => {
   });
 
   //Pause Button
-  socket.on("doPause", (data) => {
+  socket.on("pressPauseButton", (data) => {
     let room = rooms.get(data.roomName);
     console.log(`${room.name} Pause Button is pressed`);
-    room.calcSwitch = false;
-    io.to(room.name).emit("setPause");
-    systemMessage = `${clientName} pressed Pause Button`;
-    io.to(room.name).emit("showSystemMessage", { value: systemMessage });
+    io.to(room.name).emit("showSystemMessage", { value: `${clientName} pressed Pause Button` });
+    if (room.isPauseOn){
+      room.isPauseOn = false;
+      room.calcSwitch = true;
+      io.to(room.name).emit("setPauseOff");
+    }else {
+      room.isPauseOn = true;
+      room.calcSwitch = false;
+      io.to(room.name).emit("setPauseOn");
+    }
   });
   //Reset Button
   socket.on("doReset", (data) => {

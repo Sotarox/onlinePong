@@ -48,7 +48,7 @@ function btnStart() {
     });
     if (canvasMessage === '') {
         canvasMessage = 'Start';
-    } else { //canvasMessage === "Pause" or "player1 won"
+    } else { //canvasMessage === "player1 won"
         canvasMessage = '';
     }
     document.getElementById('btnStart').blur();
@@ -61,13 +61,16 @@ SOCKET.on('setStart', function (data) {
 });
 
 function btnPause() {
-    SOCKET.emit("doPause", { roomName: player.room });
-    canvasMessage = 'Pause';
+    SOCKET.emit("pressPauseButton", { roomName: player.room });
     document.getElementById('btnPause').blur();
 }
-SOCKET.on('setPause', function () {
-    document.getElementById("btnPause").disabled = "disabled";
-    document.getElementById("btnStart").disabled = "";
+SOCKET.on('setPauseOn', function () {
+    canvasMessage = 'Pause';
+    document.getElementById("btnPause").value = "resume";
+});
+SOCKET.on('setPauseOff', function () {
+    canvasMessage = '';
+    document.getElementById("btnPause").value = "pause";
 });
 
 function btnReset() {
