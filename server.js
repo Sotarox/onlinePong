@@ -47,6 +47,7 @@ function gameStateWatcher(room) {
     systemMessage = 'Press "Reset" for rematch'
     io.to(room.name).emit("showSystemMessage", { value: systemMessage });
     io.to(room.name).emit("showCanvasMessage", { value: canvasMessage });
+    io.to(room.name).emit("gameOver");
     room.gameOverSwitch = false;
   }
 }

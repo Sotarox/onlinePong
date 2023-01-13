@@ -73,6 +73,7 @@ function btnReset() {
     });
     canvasMessage = '';
     document.getElementById('btnReset').blur();
+    document.getElementById("btnPause").disabled = "";
 }
 //Receive System message from server
 SOCKET.on('showSystemMessage', function (data) {
@@ -81,4 +82,8 @@ SOCKET.on('showSystemMessage', function (data) {
 SOCKET.on('showCanvasMessage', function (data) {
     console.log(data.value);
     canvasMessage = data.value;
+});
+
+SOCKET.on('gameOver', function () {
+    document.getElementById("btnPause").disabled = "disabled";
 });
