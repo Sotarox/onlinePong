@@ -43,10 +43,10 @@ class Room {
         this.balldy = -1;
         //players
         this.players = {
-            'Player1': new Player(160, this.canvasHeight - PADDLE_HEIGHT - SWIPE_SPACE_HEIGHT),
-            'Player2': new Player(160, SWIPE_SPACE_HEIGHT),
-            'Player3': new Player(240, this.canvasHeight - PADDLE_HEIGHT - SWIPE_SPACE_HEIGHT),
-            'Player4': new Player(240, SWIPE_SPACE_HEIGHT)
+            'Player1': new Player(90, this.canvasHeight - PADDLE_HEIGHT - SWIPE_SPACE_HEIGHT),
+            'Player2': new Player(90, SWIPE_SPACE_HEIGHT),
+            'Player3': new Player(205, this.canvasHeight - PADDLE_HEIGHT - SWIPE_SPACE_HEIGHT),
+            'Player4': new Player(205, SWIPE_SPACE_HEIGHT)
         }
         // margin to detect if touch is on the paddle
         this.touchHandle = {
