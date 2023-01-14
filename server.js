@@ -77,7 +77,7 @@ io.on('connection', (socket) => {
     if (room.isGameStarted) io.to(socket.id).emit("setStart");
   });
   //Start Button
-  socket.on("doStart", (data) => {
+  socket.on("pressStartButton", (data) => {
     // get reference of the room instance
     let room = rooms.get(data.roomName);
     console.log(`${room.name} Start Button is pressed`);
@@ -146,18 +146,16 @@ io.on('connection', (socket) => {
     }
   });
   //Reset Button
-  socket.on("doReset", (data) => {
+  socket.on("pressResetButton", (data) => {
     let room = rooms.get(data.roomName);
-    if (room.isPauseOn) io.to(room.name).emit("setPauseOff");
     room.reset();
     console.log(`${room.name} Reset Button is pressed`);
     io.to(room.name).emit("showCanvasMessage", { value: "Start" });
     setTimeout(() => { io.to(room.name).emit("showCanvasMessage", { value: "" }); }, 2000);
   });
   //chat
-  socket.on("client_to_server_chat", (data) => {
-    systemMessage = data.value;
-    io.to(data.room).emit("showSystemMessage", { value: systemMessage });
+  socket.on("pressChatSendButton", (data) => {
+    io.to(data.room).emit("showSystemMessage", { value: data.message });
   });
   //disconnect
   socket.on("disconnecting", () => {

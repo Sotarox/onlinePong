@@ -15,27 +15,15 @@ $("#entryForm").submit(function (e) {
 });
 
 $("#chatForm").submit(function (e) {
-    var message = $("#chatInputField").val();
-    //delete input value in text field
-    $("#chatInputField").val('');
-    message = player.userName + ": " + message;
-    // send chat message
-    SOCKET.emit("client_to_server_chat", {
-        value: message,
+    SOCKET.emit("pressChatSendButton", {
+        message: `${player.userName}: ${$("#chatInputField").val()}`,
         room: player.room
     });
+    //delete input value in text field
+    $("#chatInputField").val('');
     e.preventDefault();
     document.getElementById('chatForm').blur();
 });
-
-var ball1 = new Ball(COLORS.BALL_GRAY);
-var paddle1 = new Paddle(0, document.getElementById("canvas").height - 10, COLORS.PLAYER_BLUE);
-var paddle2 = new Paddle(0, 0, COLORS.PLAYER_RED);
-var paddle3 = new Paddle(0, document.getElementById("canvas").height - 10, COLORS.PLAYER_GREEN);
-var paddle4 = new Paddle(0, 0, COLORS.PLAYER_PINK)
-
-// canvasMessage
-var canvasMessage = '';
 
 SOCKET.on('startRendering', (data) => {
     render();
@@ -43,7 +31,7 @@ SOCKET.on('startRendering', (data) => {
 
 //Start Button
 function btnStart() {
-    SOCKET.emit("doStart", {
+    SOCKET.emit("pressStartButton", {
         roomName: player.room
     });
     canvasMessage = 'Start';
@@ -62,7 +50,7 @@ function btnPause() {
 }
 
 function btnReset() {
-    SOCKET.emit("doReset", { roomName: player.room });
+    SOCKET.emit("pressResetButton", { roomName: player.room });
     document.getElementById('btnReset').blur();
     document.getElementById("btnPause").disabled = "";
 }

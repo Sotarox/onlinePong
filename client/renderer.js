@@ -1,7 +1,3 @@
-var scoreBlue = 0;
-var scoreRed = 0;
-var isPauseOn = false;
-
 function drawBall(ball) {
     const ctx = document.getElementById('canvas').getContext('2d');
     ctx.beginPath();
