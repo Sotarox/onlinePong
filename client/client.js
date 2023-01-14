@@ -37,7 +37,7 @@ var paddle4 = new Paddle(0, 0, COLORS.PLAYER_PINK)
 // canvasMessage
 var canvasMessage = '';
 
-SOCKET.on('startRendering', function (data) {
+SOCKET.on('startRendering', (data) => {
     render();
 });
 
@@ -46,50 +46,35 @@ function btnStart() {
     SOCKET.emit("doStart", {
         roomName: player.room
     });
-    if (canvasMessage === '') {
-        canvasMessage = 'Start';
-    } else { //canvasMessage === "player1 won"
-        canvasMessage = '';
-    }
+    canvasMessage = 'Start';
     document.getElementById('btnStart').blur();
     setTimeout(() => { if (canvasMessage === 'Start') canvasMessage = ''; }, 2000);
 }
-SOCKET.on('setStart', function (data) {
+SOCKET.on('setStart', () => {
     document.getElementById("btnStart").disabled = "disabled";
-    document.getElementById("btnPause").disabled = "";
     document.getElementById("btnReset").disabled = "";
+    document.getElementById("btnPause").disabled = "";
 });
 
 function btnPause() {
     SOCKET.emit("pressPauseButton", { roomName: player.room });
     document.getElementById('btnPause').blur();
 }
-SOCKET.on('setPauseOn', function () {
-    canvasMessage = 'Pause';
-    document.getElementById("btnPause").value = "resume";
-});
-SOCKET.on('setPauseOff', function () {
-    canvasMessage = '';
-    document.getElementById("btnPause").value = "pause";
-});
 
 function btnReset() {
-    SOCKET.emit("doReset", {
-        roomName: player.room
-    });
-    canvasMessage = '';
+    SOCKET.emit("doReset", { roomName: player.room });
     document.getElementById('btnReset').blur();
     document.getElementById("btnPause").disabled = "";
 }
 //Receive System message from server
-SOCKET.on('showSystemMessage', function (data) {
+SOCKET.on('showSystemMessage', (data) => {
     $("#systemMessageDiv").prepend("<div>" + data.value + "</div>");
 });
-SOCKET.on('showCanvasMessage', function (data) {
+SOCKET.on('showCanvasMessage', (data) => {
     console.log(data.value);
     canvasMessage = data.value;
 });
 
-SOCKET.on('gameOver', function () {
+SOCKET.on('gameOver', () => {
     document.getElementById("btnPause").disabled = "disabled";
 });

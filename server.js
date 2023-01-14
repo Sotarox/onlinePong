@@ -30,22 +30,15 @@ const rooms = new Map([
 ]);
 
 function gameStateWatcher(room) {
-  //watch scores
-  if (room.scoreRenewSwitch === true) {
-    io.to(room.name).emit("renewScore", { scoreBlue: room.scoreBlue, scoreRed: room.scoreRed });
-    room.scoreRenewSwitch = false;
-  }
-  //watch gameOver
+  // Watch gameOver
   if (room.gameOverSwitch === true) {
-    var systemMessage = '';
     var canvasMessage = '';
     if (room.scoreBlue === 3) {
       canvasMessage = 'Player1(Blue) & 3(Green) Won!'
     } else if (room.scoreRed === 3) {
       canvasMessage = 'Player2(Red) & 4(Pink) Won!'
     }
-    systemMessage = 'Press "Reset" for rematch'
-    io.to(room.name).emit("showSystemMessage", { value: systemMessage });
+    io.to(room.name).emit("showSystemMessage", { value: `Press "Reset" for rematch` });
     io.to(room.name).emit("showCanvasMessage", { value: canvasMessage });
     io.to(room.name).emit("gameOver");
     room.gameOverSwitch = false;
@@ -81,14 +74,16 @@ io.on('connection', (socket) => {
     }
     io.to(data.room).emit("showSystemMessage", { value: systemMessage });
     io.to(socket.id).emit("startRendering");
+    if (room.isGameStarted) io.to(socket.id).emit("setStart");
   });
   //Start Button
   socket.on("doStart", (data) => {
     // get reference of the room instance
     let room = rooms.get(data.roomName);
     console.log(`${room.name} Start Button is pressed`);
+    room.isGameStarted = true;
     room.calcSwitch = true;
-    io.to(room.name).emit("setStart", { scoreBlue: room.scoreBlue, scoreRed: room.scoreRed });
+    io.to(room.name).emit("setStart");
   });
   //to initialize ball&paddle coordinates
   socket.on("getCoordinates", (data) => {
@@ -106,7 +101,8 @@ io.on('connection', (socket) => {
         player4PaddleX: room.players.Player4.paddle.x,
         player4PaddleY: room.players.Player4.paddle.y,
         scoreBlue: room.scoreBlue,
-        scoreRed: room.scoreRed
+        scoreRed: room.scoreRed,
+        isPauseOn: room.isPauseOn
       });
   });
 
@@ -142,18 +138,21 @@ io.on('connection', (socket) => {
     if (room.isPauseOn){
       room.isPauseOn = false;
       room.calcSwitch = true;
-      io.to(room.name).emit("setPauseOff");
+      io.to(room.name).emit("showCanvasMessage", { value: "" });
     }else {
       room.isPauseOn = true;
       room.calcSwitch = false;
-      io.to(room.name).emit("setPauseOn");
+      io.to(room.name).emit("showCanvasMessage", { value: "Pause" });
     }
   });
   //Reset Button
   socket.on("doReset", (data) => {
     let room = rooms.get(data.roomName);
+    if (room.isPauseOn) io.to(room.name).emit("setPauseOff");
     room.reset();
     console.log(`${room.name} Reset Button is pressed`);
+    io.to(room.name).emit("showCanvasMessage", { value: "Start" });
+    setTimeout(() => { io.to(room.name).emit("showCanvasMessage", { value: "" }); }, 2000);
   });
   //chat
   socket.on("client_to_server_chat", (data) => {

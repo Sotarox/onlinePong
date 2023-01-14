@@ -55,6 +55,8 @@ class Room {
         }
         // pause button state
         this.isPauseOn = false;
+        // room's game state
+        this.isGameStarted = false;
     }
     calculate() {
         if (this.calcSwitch == true) {
@@ -184,6 +186,7 @@ class Room {
         this.balldy = -2;
         this.gameOverSwitch = false;
         this.calcSwitch = true;
+        this.isPauseOn = false;
     }
 }//Room
 module.exports = Room;

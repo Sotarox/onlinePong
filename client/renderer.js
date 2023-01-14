@@ -1,5 +1,6 @@
 var scoreBlue = 0;
 var scoreRed = 0;
+var isPauseOn = false;
 
 function drawBall(ball) {
     const ctx = document.getElementById('canvas').getContext('2d');
@@ -59,6 +60,15 @@ function drawCanvasMessage() {
     }
 }
 
+function visualizePause(isPauseOn) {
+    if (isPauseOn) {
+        document.getElementById("btnPause").value = "resume";
+        canvasMessage = 'Pause';
+    } else {
+        document.getElementById("btnPause").value = "pause";
+    }
+}
+
 function render() {
     const ctx = document.getElementById('canvas').getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -78,6 +88,7 @@ function render() {
         paddle4.positionY = data.player4PaddleY;
         scoreBlue = data.scoreBlue;
         scoreRed = data.scoreRed;
+        isPauseOn = data.isPauseOn;
     });
     drawCanvasMessage();
     drawGoalLines();
@@ -87,6 +98,7 @@ function render() {
     drawPaddle(paddle3);
     drawPaddle(paddle4);
     drawScore(scoreBlue, scoreRed);
+    visualizePause(isPauseOn);
     // Render animation repeatedly by 60fps
     requestAnimationFrame(render);
 }
