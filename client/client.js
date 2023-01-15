@@ -1,11 +1,10 @@
 document.getElementById("gameDiv").style.display = "none";
 
-$("#entryForm").submit(function (e) {
+$("#entryForm").submit((e) => {
     player.userName = $("#nameField").val() || "John Doe";
-    player.room = $("#roomsDropDownList").val();
     SOCKET.emit("client_to_server_join", {
         clientName: player.userName,
-        room: player.room
+        room: $("#roomsDropDownList").val()
     });
     document.getElementById("gameDiv").style.display = "block";
     document.getElementById("entryDiv").style.display = "none";
@@ -13,10 +12,9 @@ $("#entryForm").submit(function (e) {
     document.getElementById('entryForm').blur();
 });
 
-$("#chatForm").submit(function (e) {
+$("#chatForm").submit((e) => {
     SOCKET.emit("pressChatSendButton", {
         message: `${player.userName}: ${$("#chatInputField").val()}`,
-        room: player.room
     });
     //delete input value in text field
     $("#chatInputField").val('');
@@ -25,14 +23,12 @@ $("#chatForm").submit(function (e) {
 });
 
 // This function is firstly called when connecting socket server
-SOCKET.on('startRendering', (data) => {
+SOCKET.on('startRendering', () => {
     render();
 });
 
 function btnStart() {
-    SOCKET.emit("pressStartButton", {
-        roomName: player.room
-    });
+    SOCKET.emit("pressStartButton");
     document.getElementById('btnStart').blur();
 }
 SOCKET.on('setStart', () => {
@@ -42,12 +38,12 @@ SOCKET.on('setStart', () => {
 });
 
 function btnPause() {
-    SOCKET.emit("pressPauseButton", { roomName: player.room });
+    SOCKET.emit("pressPauseButton");
     document.getElementById('btnPause').blur();
 }
 
 function btnReset() {
-    SOCKET.emit("pressResetButton", { roomName: player.room });
+    SOCKET.emit("pressResetButton");
     document.getElementById('btnReset').blur();
     document.getElementById("btnPause").disabled = "";
 }

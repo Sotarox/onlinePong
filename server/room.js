@@ -26,6 +26,7 @@ class Paddle {
 
 class Room {
     constructor(name) {
+        // TODO: name is used only in a server.js's gameStateWatcher. Research and delete this var if possible.
         this.name = name;
         this.calcSwitch = false;
         this.gameOverSwitch = false;

@@ -4,8 +4,6 @@ const SOCKET = io();
 class Player {
     constructor() {
         this.userName = '';
-        this.playerNumber = '';
-        this.room = '';
     }
 }
 class Ball {
