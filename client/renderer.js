@@ -41,18 +41,18 @@ function drawScore(scoreBlue, scoreRed) {
     ctx.fillText("P2(Red) & P3(Pink): " + scoreRed, 8, 25);
 }
 
-function drawCanvasMessage() {
+function drawCanvasMessage(text) {
     const ctx = document.getElementById('canvas').getContext('2d');
     ctx.fillStyle = COLORS.TEXT_GRAY;
-    if (canvasMessage === 'Start') {
+    if (text === 'Start') {
         ctx.font = "80px Orbitron";
-        ctx.fillText(canvasMessage, 80, 260);
-    } else if (canvasMessage === 'Pause') {
+        ctx.fillText(text, 80, 260);
+    } else if (text === 'Pause') {
         ctx.font = "60px Orbitron";
-        ctx.fillText(canvasMessage, 80, 260);
+        ctx.fillText(text, 80, 260);
     } else { //When Game is over
         ctx.font = "20px Orbitron";
-        ctx.fillText(canvasMessage, 20, 260);
+        ctx.fillText(text, 20, 260);
     }
 }
 
@@ -68,10 +68,10 @@ function visualizePause(isPauseOn) {
 function render() {
     const ctx = document.getElementById('canvas').getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    SOCKET.emit("getCoordinates", {
+    SOCKET.emit("getWhatToRender", {
         roomName: player.room
     });
-    SOCKET.on('setCoordinates', function (data) {
+    SOCKET.on('setWhatToRender', function (data) {
         ball1.positionX = data.ballX;
         ball1.positionY = data.ballY;
         paddle1.positionX = data.player1PaddleX;
@@ -85,8 +85,9 @@ function render() {
         scoreBlue = data.scoreBlue;
         scoreRed = data.scoreRed;
         isPauseOn = data.isPauseOn;
+        canvasMessage = data.canvasMessage;
     });
-    drawCanvasMessage();
+    drawCanvasMessage(canvasMessage);
     drawGoalLines();
     drawBall(ball1);
     drawPaddle(paddle1);

@@ -32,16 +32,14 @@ const rooms = new Map([
 function gameStateWatcher(room) {
   // Watch gameOver
   if (room.gameOverSwitch === true) {
-    var canvasMessage = '';
     if (room.scoreBlue === 3) {
-      canvasMessage = 'Player1(Blue) & 3(Green) Won!'
+      room.canvasMessage = 'Player1(Blue) & 3(Green) Won!'
     } else if (room.scoreRed === 3) {
-      canvasMessage = 'Player2(Red) & 4(Pink) Won!'
+      room.canvasMessage = 'Player2(Red) & 4(Pink) Won!'
     }
     io.to(room.name).emit("showSystemMessage", { value: `Press "Reset" for rematch` });
-    io.to(room.name).emit("showCanvasMessage", { value: canvasMessage });
-    io.to(room.name).emit("gameOver");
     room.gameOverSwitch = false;
+    io.to(room.name).emit("gameOver");
   }
 }
 // Start rendering rooms 
@@ -51,7 +49,7 @@ for (const room of rooms.values()) {
   setInterval(() => gameStateWatcher(room), 10);
 }
 
-//sockets start
+// When a user connect server, this function is firstly called
 io.on('connection', (socket) => {
   console.log(socket.id + ' connected to server with socketIO version: ', socket.conn.protocol);
   var clientName = '';
@@ -83,12 +81,14 @@ io.on('connection', (socket) => {
     console.log(`${room.name} Start Button is pressed`);
     room.isGameStarted = true;
     room.calcSwitch = true;
+    room.canvasMessage = "Start";
+    setTimeout(() => { if(room.canvasMessage = "Start") room.canvasMessage = ""; }, 2000);
     io.to(room.name).emit("setStart");
   });
   //to initialize ball&paddle coordinates
-  socket.on("getCoordinates", (data) => {
+  socket.on("getWhatToRender", (data) => {
     let room = rooms.get(data.roomName);
-    io.to(room.name).emit("setCoordinates",
+    io.to(room.name).emit("setWhatToRender",
       {
         ballX: room.ballX,
         ballY: room.ballY,
@@ -102,7 +102,8 @@ io.on('connection', (socket) => {
         player4PaddleY: room.players.Player4.paddle.y,
         scoreBlue: room.scoreBlue,
         scoreRed: room.scoreRed,
-        isPauseOn: room.isPauseOn
+        isPauseOn: room.isPauseOn,
+        canvasMessage: room.canvasMessage
       });
   });
 
@@ -135,23 +136,17 @@ io.on('connection', (socket) => {
     let room = rooms.get(data.roomName);
     console.log(`${room.name} Pause Button is pressed`);
     io.to(room.name).emit("showSystemMessage", { value: `${clientName} pressed Pause Button` });
-    if (room.isPauseOn){
-      room.isPauseOn = false;
-      room.calcSwitch = true;
-      io.to(room.name).emit("showCanvasMessage", { value: "" });
-    }else {
-      room.isPauseOn = true;
-      room.calcSwitch = false;
-      io.to(room.name).emit("showCanvasMessage", { value: "Pause" });
-    }
+    room.isPauseOn ? room.canvasMessage = "" : room.canvasMessage = "Pause";
+    room.isPauseOn = !room.isPauseOn;
+    room.calcSwitch = !room.calcSwitch;
   });
   //Reset Button
   socket.on("pressResetButton", (data) => {
     let room = rooms.get(data.roomName);
     room.reset();
     console.log(`${room.name} Reset Button is pressed`);
-    io.to(room.name).emit("showCanvasMessage", { value: "Start" });
-    setTimeout(() => { io.to(room.name).emit("showCanvasMessage", { value: "" }); }, 2000);
+    room.canvasMessage = "Start";
+    setTimeout(() => { if(room.canvasMessage = "Start") room.canvasMessage = ""; }, 2000);
   });
   //chat
   socket.on("pressChatSendButton", (data) => {

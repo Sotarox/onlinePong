@@ -38,6 +38,7 @@ const COLORS = {
 }
 
 // Variables that overwritten by multiple js files
+var player = new Player();
 var ball1 = new Ball(COLORS.BALL_GRAY);
 var paddle1 = new Paddle(0, document.getElementById("canvas").height - 10, COLORS.PLAYER_BLUE);
 var paddle2 = new Paddle(0, 0, COLORS.PLAYER_RED);

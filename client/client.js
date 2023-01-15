@@ -1,5 +1,4 @@
 document.getElementById("gameDiv").style.display = "none";
-var player = new Player();
 
 $("#entryForm").submit(function (e) {
     player.userName = $("#nameField").val() || "John Doe";
@@ -25,18 +24,16 @@ $("#chatForm").submit(function (e) {
     document.getElementById('chatForm').blur();
 });
 
+// This function is firstly called when connecting socket server
 SOCKET.on('startRendering', (data) => {
     render();
 });
 
-//Start Button
 function btnStart() {
     SOCKET.emit("pressStartButton", {
         roomName: player.room
     });
-    canvasMessage = 'Start';
     document.getElementById('btnStart').blur();
-    setTimeout(() => { if (canvasMessage === 'Start') canvasMessage = ''; }, 2000);
 }
 SOCKET.on('setStart', () => {
     document.getElementById("btnStart").disabled = "disabled";
@@ -57,10 +54,6 @@ function btnReset() {
 //Receive System message from server
 SOCKET.on('showSystemMessage', (data) => {
     $("#systemMessageDiv").prepend("<div>" + data.value + "</div>");
-});
-SOCKET.on('showCanvasMessage', (data) => {
-    console.log(data.value);
-    canvasMessage = data.value;
 });
 
 SOCKET.on('gameOver', () => {

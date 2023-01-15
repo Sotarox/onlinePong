@@ -57,6 +57,8 @@ class Room {
         this.isPauseOn = false;
         // room's game state
         this.isGameStarted = false;
+        // message in canvas e.g. Start, Pause
+        this.canvasMessage = "";
     }
     calculate() {
         if (this.calcSwitch == true) {
