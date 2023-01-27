@@ -3,7 +3,7 @@ const PADDLE_WIDTH = 65;
 const SWIPE_SPACE_HEIGHT = 50;
 
 class Player {
-    // x: number. initial x-coordinate of the paddle
+    // paddlePosX: number. initial x-coordinate of the paddle
     constructor(paddlePosX, paddlePosY) {
         this.isAvailable = true;
         this.isRightPressed = false;
