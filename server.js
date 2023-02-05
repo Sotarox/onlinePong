@@ -74,13 +74,12 @@ io.on('connection', (socket) => {
     }
     io.to(roomId).emit("showSystemMessage", { value: systemMessage });
     io.to(socket.id).emit("startRendering");
-    if (room.calcSwitch) io.to(socket.id).emit("setStart");
+    if (room.isGameStarted) io.to(socket.id).emit("setStart");
   });
   //Start Button
   socket.on("pressStartButton", (data) => {
     // get reference of the room instance
     console.log(`${roomId} Start Button is pressed`);
-    room.calcSwitch = true;
     room.isGameStarted = true;
     room.canvasMessage = "Start";
     setTimeout(() => { if(room.canvasMessage = "Start") room.canvasMessage = ""; }, 2000);
@@ -137,7 +136,6 @@ io.on('connection', (socket) => {
     io.to(roomId).emit("showSystemMessage", { value: `${clientName} pressed Pause Button` });
     room.isPauseOn ? room.canvasMessage = "" : room.canvasMessage = "Pause";
     room.isPauseOn = !room.isPauseOn;
-    room.calcSwitch = !room.calcSwitch;
   });
   //Reset Button
   socket.on("pressResetButton", () => {

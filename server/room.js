@@ -28,8 +28,6 @@ class Room {
     constructor(name) {
         // TODO: name is used only in a server.js's gameStateWatcher. Research and delete this var if possible.
         this.name = name;
-        this.calcSwitch = false;
-        this.scoreRenewSwitch = false;
         this.scoreBlue = 0;
         this.scoreRed = 0;
         //canvas & score
@@ -61,7 +59,8 @@ class Room {
         this.canvasMessage = "";
     }
     calculate() {
-        if (this.calcSwitch == true) {
+        // Calculate ball move
+        if (this.isGameStarted && !this.gameOverSwitch && !this.isPauseOn) {
             if (this.isBallTouchTheSideWall()) {
                 this.balldx *= -1;
             }
@@ -83,21 +82,20 @@ class Room {
                     this.processAfterScore();
                 }
             }
-
             this.ballX += this.balldx;
             this.ballY += this.balldy;
-
-            // Key handling
-            Object.keys(this.players).forEach(n => {
-                if (this.players[n].isRightPressed && this.players[n].paddle.x < this.canvasWidth - this.players[n].paddle.width) {
-                    this.players[n].paddle.x += 5;
-                } else if (this.players[n].isLeftPressed && this.players[n].paddle.x > 0) {
-                    this.players[n].paddle.x -= 5;
-                }
-            });
-
         }
-    } // calcurate() END
+
+        // Key handling
+        Object.keys(this.players).forEach(n => {
+            if (this.players[n].isRightPressed && this.players[n].paddle.x < this.canvasWidth - this.players[n].paddle.width) {
+                this.players[n].paddle.x += 5;
+            } else if (this.players[n].isLeftPressed && this.players[n].paddle.x > 0) {
+                this.players[n].paddle.x -= 5;
+            }
+        });
+
+    }
 
     onHandleTouch(playerNumber, posX, when) {
         let state = this.players[playerNumber].touchState;
@@ -125,8 +123,8 @@ class Room {
         }
     }
 
-    restrictPosXInCanvas (x ,paddle) {
-        if (x < 0) return 0; 
+    restrictPosXInCanvas(x, paddle) {
+        if (x < 0) return 0;
         if (x > this.canvasWidth - paddle.width)
             return this.canvasWidth - paddle.width;
         return x;
@@ -135,7 +133,7 @@ class Room {
     // Y axis is currently not used for detection
     judgeIsTouchOnPaddle(touchX, paddle) {
         const marginWidth = this.touchHandle.marginPaddleWidth;
-        return paddle.x - marginWidth < touchX && 
+        return paddle.x - marginWidth < touchX &&
             touchX < paddle.x + paddle.width + marginWidth;
     }
 
@@ -162,10 +160,7 @@ class Room {
 
     // Judge if a team got 3 points. If so, turn on gameOverSwitch. 
     processAfterScore() {
-        this.scoreRenewSwitch = true;
         if (this.scoreBlue == 3 || this.scoreRed == 3) {
-            this.calcSwitch = false;
-            this.ballX = 500; //ball goes out from the canvas
             this.gameOverSwitch = true;
         }
         else {
@@ -187,8 +182,7 @@ class Room {
         this.ballY = 270;
         this.balldy = -2;
         this.gameOverSwitch = false;
-        this.calcSwitch = true;
         this.isPauseOn = false;
     }
-}//Room
+} //Room
 module.exports = Room;
