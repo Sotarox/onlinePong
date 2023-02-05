@@ -31,7 +31,7 @@ const rooms = new Map([
 
 // Watch if game is over. This function is called repeatedly in loop
 function gameStateWatcher(room) {
-  if (room.gameOverSwitch === true) {
+  if (room.isGameOver === true) {
     if (room.scoreBlue === 3) {
       room.canvasMessage = 'Player1(Blue) & 3(Green) Won!'
     } else if (room.scoreRed === 3) {
@@ -103,7 +103,7 @@ io.on('connection', (socket) => {
         scoreRed: room.scoreRed,
         canvasMessage: room.canvasMessage,
         isGameStarted: room.isGameStarted,
-        isGameOver: room.gameOverSwitch,
+        isGameOver: room.isGameOver,
         isPauseOn: room.isPauseOn
       });
   });

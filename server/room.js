@@ -53,40 +53,19 @@ class Room {
         }
         // game processing state
         this.isGameStarted = false;
-        this.gameOverSwitch = false;
+        this.isGameOver = false;
         this.isPauseOn = false;
         // message in canvas e.g. Start, Pause
         this.canvasMessage = "";
     }
     calculate() {
-        // Calculate ball move
-        if (this.isGameStarted && !this.gameOverSwitch && !this.isPauseOn) {
-            if (this.isBallTouchTheSideWall()) {
-                this.balldx *= -1;
-            }
-            else if (this.isBallPassingUpperEdge()) {
-                if ((this.isBallTouchPaddle(this.players.Player2)) || (this.isBallTouchPaddle(this.players.Player4))) {
-                    this.ballReflectOnPaddle();
-                }
-                else {
-                    this.scoreBlue += 1;
-                    this.processAfterScore();
-                }
-            }
-            else if (this.isBallPassingLowerEdge()) {
-                if ((this.isBallTouchPaddle(this.players.Player1)) || (this.isBallTouchPaddle(this.players.Player3))) {
-                    this.ballReflectOnPaddle();
-                }
-                else {
-                    this.scoreRed += 1;
-                    this.processAfterScore();
-                }
-            }
-            this.ballX += this.balldx;
-            this.ballY += this.balldy;
-        }
-
-        // Key handling
+        if (this.isPauseOn) return;
+        this.calcNextPaddlePositions();
+        this.calcNextBallPosition();
+    }
+    
+    // calculate paddle position based on key input. Key handling occurs in server.js
+    calcNextPaddlePositions(){
         Object.keys(this.players).forEach(n => {
             if (this.players[n].isRightPressed && this.players[n].paddle.x < this.canvasWidth - this.players[n].paddle.width) {
                 this.players[n].paddle.x += 5;
@@ -94,7 +73,34 @@ class Room {
                 this.players[n].paddle.x -= 5;
             }
         });
+    }
 
+    // TODO: seperate score related part
+    calcNextBallPosition() {
+        if (!this.isGameStarted || this.isGameOver) return;
+        if (this.isBallTouchTheSideWall()) {
+            this.balldx *= -1;
+        }
+        else if (this.isBallPassingUpperEdge()) {
+            if ((this.isBallTouchPaddle(this.players.Player2)) || (this.isBallTouchPaddle(this.players.Player4))) {
+                this.ballReflectOnPaddle();
+            }
+            else {
+                this.scoreBlue += 1;
+                this.processAfterScore();
+            }
+        }
+        else if (this.isBallPassingLowerEdge()) {
+            if ((this.isBallTouchPaddle(this.players.Player1)) || (this.isBallTouchPaddle(this.players.Player3))) {
+                this.ballReflectOnPaddle();
+            }
+            else {
+                this.scoreRed += 1;
+                this.processAfterScore();
+            }
+        }
+        this.ballX += this.balldx;
+        this.ballY += this.balldy;
     }
 
     onHandleTouch(playerNumber, posX, when) {
@@ -158,10 +164,10 @@ class Room {
         else return false;
     }
 
-    // Judge if a team got 3 points. If so, turn on gameOverSwitch. 
+    // Judge if a team got 3 points. If so, turn on isGameOver. 
     processAfterScore() {
         if (this.scoreBlue == 3 || this.scoreRed == 3) {
-            this.gameOverSwitch = true;
+            this.isGameOver = true;
         }
         else {
             this.ballX = 240;
@@ -181,7 +187,7 @@ class Room {
         this.ballX = 240;
         this.ballY = 270;
         this.balldy = -2;
-        this.gameOverSwitch = false;
+        this.isGameOver = false;
         this.isPauseOn = false;
     }
 } //Room
