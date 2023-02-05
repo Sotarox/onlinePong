@@ -46,3 +46,5 @@ var canvasMessage = '';
 var scoreBlue = 0;
 var scoreRed = 0;
 var isPauseOn = false;
+var isGameStarted = false;
+var isGameOver = false;

@@ -43,7 +43,6 @@ input.gameButton {
 #sendButton {
     font-family: 'Orbitron', sans-serif;
     font-size: small;
-    /* display: inline-block; */
     padding: 0.5em 1em;
     text-decoration: none;
     background: #668ad8;

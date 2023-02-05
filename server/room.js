@@ -29,7 +29,6 @@ class Room {
         // TODO: name is used only in a server.js's gameStateWatcher. Research and delete this var if possible.
         this.name = name;
         this.calcSwitch = false;
-        this.gameOverSwitch = false;
         this.scoreRenewSwitch = false;
         this.scoreBlue = 0;
         this.scoreRed = 0;
@@ -54,10 +53,10 @@ class Room {
             marginPaddleWidth: 10,
             marginPaddleHeight: 10
         }
-        // pause button state
-        this.isPauseOn = false;
-        // room's game state
+        // game processing state
         this.isGameStarted = false;
+        this.gameOverSwitch = false;
+        this.isPauseOn = false;
         // message in canvas e.g. Start, Pause
         this.canvasMessage = "";
     }
@@ -161,7 +160,7 @@ class Room {
         else return false;
     }
 
-    // Judge if a team got 3 points. If so, game is over. 
+    // Judge if a team got 3 points. If so, turn on gameOverSwitch. 
     processAfterScore() {
         this.scoreRenewSwitch = true;
         if (this.scoreBlue == 3 || this.scoreRed == 3) {

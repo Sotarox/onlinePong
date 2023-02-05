@@ -29,18 +29,18 @@ const rooms = new Map([
   ['room02', new Room('room02')],
 ]);
 
+// Watch if game is over. This function is called repeatedly in loop
 function gameStateWatcher(room) {
-  // Watch gameOver
   if (room.gameOverSwitch === true) {
     if (room.scoreBlue === 3) {
       room.canvasMessage = 'Player1(Blue) & 3(Green) Won!'
     } else if (room.scoreRed === 3) {
       room.canvasMessage = 'Player2(Red) & 4(Pink) Won!'
     }
-    io.to(room.name).emit("showSystemMessage", { value: `Press "Reset" for rematch` });
-    room.gameOverSwitch = false;
+    // TODO: consider how to display the following info in client 
+    //io.to(room.name).emit("showSystemMessage", { value: `Press "Reset" for rematch` });
     io.to(room.name).emit("gameOver");
-  }
+  } 
 }
 // Start rendering rooms 
 // TODO: Unused room is also rendered. Improve this only when somebody enter the room.
@@ -74,14 +74,14 @@ io.on('connection', (socket) => {
     }
     io.to(roomId).emit("showSystemMessage", { value: systemMessage });
     io.to(socket.id).emit("startRendering");
-    if (room.isGameStarted) io.to(socket.id).emit("setStart");
+    if (room.calcSwitch) io.to(socket.id).emit("setStart");
   });
   //Start Button
   socket.on("pressStartButton", (data) => {
     // get reference of the room instance
     console.log(`${roomId} Start Button is pressed`);
-    room.isGameStarted = true;
     room.calcSwitch = true;
+    room.isGameStarted = true;
     room.canvasMessage = "Start";
     setTimeout(() => { if(room.canvasMessage = "Start") room.canvasMessage = ""; }, 2000);
     io.to(roomId).emit("setStart");
@@ -102,8 +102,10 @@ io.on('connection', (socket) => {
         player4PaddleY: room.players.Player4.paddle.y,
         scoreBlue: room.scoreBlue,
         scoreRed: room.scoreRed,
-        isPauseOn: room.isPauseOn,
-        canvasMessage: room.canvasMessage
+        canvasMessage: room.canvasMessage,
+        isGameStarted: room.isGameStarted,
+        isGameOver: room.gameOverSwitch,
+        isPauseOn: room.isPauseOn
       });
   });
 

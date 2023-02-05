@@ -84,12 +84,14 @@ function render() {
         paddle4.positionY = data.player4PaddleY;
         scoreBlue = data.scoreBlue;
         scoreRed = data.scoreRed;
-        isPauseOn = data.isPauseOn;
         canvasMessage = data.canvasMessage;
+        isGameStarted = data.isGameStarted;
+        isGameOver = data.isGameOver;
+        isPauseOn = data.isPauseOn;
     });
     drawCanvasMessage(canvasMessage);
     drawGoalLines();
-    drawBall(ball1);
+    if (isGameStarted && !isGameOver) drawBall(ball1);
     drawPaddle(paddle1);
     drawPaddle(paddle2);
     drawPaddle(paddle3);
