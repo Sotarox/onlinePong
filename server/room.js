@@ -39,6 +39,7 @@ class Room {
         this.ballY = 270 //initial y-coordiante. canvasHeight/2;
         this.balldx = 1; // how many pixels to move by a rendering
         this.balldy = -1;
+        this.ballHeight = this.ballRadius * 2;
         //players
         this.players = {
             'Player1': new Player(90, this.canvasHeight - PADDLE_HEIGHT - SWIPE_SPACE_HEIGHT),
@@ -63,9 +64,9 @@ class Room {
         this.calcNextPaddlePositions();
         this.calcNextBallPosition();
     }
-    
+
     // calculate paddle position based on key input. Key handling occurs in server.js
-    calcNextPaddlePositions(){
+    calcNextPaddlePositions() {
         Object.keys(this.players).forEach(n => {
             if (this.players[n].isRightPressed && this.players[n].paddle.x < this.canvasWidth - this.players[n].paddle.width) {
                 this.players[n].paddle.x += 5;
@@ -75,30 +76,23 @@ class Room {
         });
     }
 
-    // TODO: seperate score related part
     calcNextBallPosition() {
         if (!this.isGameStarted || this.isGameOver) return;
-        if (this.isBallTouchTheSideWall()) {
-            this.balldx *= -1;
+        if (this.isBallHitSideWall()) this.balldx *= -1;
+
+        // if ball hit paddle
+        if (this.isBallHitUpperPaddle(this.players.Player2) || this.isBallHitUpperPaddle(this.players.Player4) ||
+            this.isBallHitLowerPaddle(this.players.Player1) || this.isBallHitLowerPaddle(this.players.Player3)) {
+            this.reflectBallOnPaddle();
+        } else if (this.isBallPassingUpperEdge()) {
+            this.scoreBlue += 1;
+            this.processAfterScore();
+        } else if (this.isBallPassingLowerEdge()) {
+            this.scoreRed += 1;
+            this.processAfterScore();
         }
-        else if (this.isBallPassingUpperEdge()) {
-            if ((this.isBallTouchPaddle(this.players.Player2)) || (this.isBallTouchPaddle(this.players.Player4))) {
-                this.ballReflectOnPaddle();
-            }
-            else {
-                this.scoreBlue += 1;
-                this.processAfterScore();
-            }
-        }
-        else if (this.isBallPassingLowerEdge()) {
-            if ((this.isBallTouchPaddle(this.players.Player1)) || (this.isBallTouchPaddle(this.players.Player3))) {
-                this.ballReflectOnPaddle();
-            }
-            else {
-                this.scoreRed += 1;
-                this.processAfterScore();
-            }
-        }
+
+        // finally block. ball moves always a little bit
         this.ballX += this.balldx;
         this.ballY += this.balldy;
     }
@@ -143,13 +137,13 @@ class Room {
             touchX < paddle.x + paddle.width + marginWidth;
     }
 
-    isBallTouchTheSideWall() {
+    isBallHitSideWall() {
         if (this.ballX + this.balldx > this.canvasWidth - this.ballRadius || this.ballX + this.balldx < this.ballRadius) return true;
         else return false;
     }
 
     isBallPassingUpperEdge() {
-        if (this.ballY + this.balldy < this.ballRadius + SWIPE_SPACE_HEIGHT) return true;
+        if (this.ballY + this.balldy < SWIPE_SPACE_HEIGHT) return true;
         else return false;
     }
 
@@ -158,9 +152,17 @@ class Room {
         else return false;
     }
 
-    isBallTouchPaddle(player) {
+    isBallHitUpperPaddle(player) {
         const paddle = player.paddle;
-        if (this.ballX > paddle.x && this.ballX < paddle.x + paddle.width) return true;
+        if (this.ballX > paddle.x && this.ballX < paddle.x + paddle.width &&
+            paddle.y < this.ballY && this.ballY < paddle.y + paddle.height) return true;
+        else return false;
+    }
+
+    isBallHitLowerPaddle(player) {
+        const paddle = player.paddle;
+        if (this.ballX > paddle.x && this.ballX < paddle.x + paddle.width &&
+            paddle.y < this.ballY + this.ballHeight && paddle.y + paddle.height < this.ballY + this.ballHeight) return true;
         else return false;
     }
 
@@ -176,7 +178,7 @@ class Room {
         }
     }
 
-    ballReflectOnPaddle() {
+    reflectBallOnPaddle() {
         this.balldy *= -1;
         this.balldy > 0 ? this.balldy += 0.5 : this.balldy -= 0.5;
     }

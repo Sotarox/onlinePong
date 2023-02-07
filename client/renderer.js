@@ -90,8 +90,8 @@ function render() {
         isPauseOn = data.isPauseOn;
     });
     drawCanvasMessage(canvasMessage);
-    drawGoalLines();
     if (isGameStarted && !isGameOver) drawBall(ball1);
+    drawGoalLines();
     drawPaddle(paddle1);
     drawPaddle(paddle2);
     drawPaddle(paddle3);
