@@ -1,3 +1,5 @@
+const Ball = require("./Ball.js");
+
 const PADDLE_HEIGHT = 10;
 const PADDLE_WIDTH = 65;
 const SWIPE_SPACE_HEIGHT = 50;
@@ -21,33 +23,6 @@ class Paddle {
         this.y = y;
         this.height = PADDLE_HEIGHT;
         this.width = PADDLE_WIDTH;
-    }
-}
-
-class Ball {
-    constructor() {
-        this.radius = 10;
-        this.x = 240 //initial x-coordinate. canvasWidth/2;
-        this.y = 270 //initial y-coordiante. canvasHeight/2;
-        this.dx = 1; // how many pixels to move by a rendering
-        this.dy = -1;
-        this.height = this.radius * 2;
-    }
-    move() {
-        this.x += this.dx;
-        this.y += this.dy;
-    };
-    reflectHorizontal() {
-        this.dx *= -1;
-    }
-    reflectVertical() {
-        this.dy *= -1;
-        this.dy > 0 ? this.dy += 0.5 : this.dy -= 0.5;
-    }
-    reset() {
-        this.x = 240;
-        this.y = 270;
-        this.dy > 0 ? this.dy = 2 : this.dy = -2;
     }
 }
 
@@ -199,12 +174,8 @@ class Room {
 
     // Judge if a team got 3 points. If so, turn on isGameOver. 
     processAfterScore() {
-        if (this.scoreBlue === 3 || this.scoreRed === 3) {
-            this.isGameOver = true;
-        }
-        else {
-            this.ball.reset();
-        }
+        if (this.scoreBlue === 3 || this.scoreRed === 3) this.isGameOver = true;
+        else this.ball.reset();
     }
 
     reset() {
@@ -214,5 +185,5 @@ class Room {
         this.isGameOver = false;
         this.isPauseOn = false;
     }
-} //Room
+}
 module.exports = Room;
