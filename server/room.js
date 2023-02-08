@@ -33,6 +33,22 @@ class Ball {
         this.dy = -1;
         this.height = this.radius * 2;
     }
+    move() {
+        this.x += this.dx;
+        this.y += this.dy;
+    };
+    reflectHorizontal() {
+        this.dx *= -1;
+    }
+    reflectVertical() {
+        this.dy *= -1;
+        this.dy > 0 ? this.dy += 0.5 : this.dy -= 0.5;
+    }
+    reset() {
+        this.x = 240;
+        this.y = 270;
+        this.dy > 0 ? this.dy = 2 : this.dy = -2;
+    }
 }
 
 class Room {
@@ -84,12 +100,13 @@ class Room {
 
     calcNextBallPosition() {
         if (!this.isGameStarted || this.isGameOver) return;
-        if (this.isBallHitSideWall()) this.ball.dx *= -1;
+        if (this.isBallHitSideWall()) this.ball.reflectHorizontal();
 
         // if ball hit paddle
         if (this.isBallHitUpperPaddle(this.players.Player2) || this.isBallHitUpperPaddle(this.players.Player4) ||
             this.isBallHitLowerPaddle(this.players.Player1) || this.isBallHitLowerPaddle(this.players.Player3)) {
-            this.reflectBallOnPaddle();
+            // this.reflectBallOnPaddle();
+            this.ball.reflectVertical();
         } else if (this.isBallPassingUpperEdge()) {
             this.scoreBlue += 1;
             this.processAfterScore();
@@ -98,9 +115,7 @@ class Room {
             this.processAfterScore();
         }
 
-        // finally block. ball moves always a little bit
-        this.ball.x += this.ball.dx;
-        this.ball.y += this.ball.dy;
+        this.ball.move();
     }
 
     onHandleTouch(playerNumber, posX, when) {
@@ -188,23 +203,14 @@ class Room {
             this.isGameOver = true;
         }
         else {
-            this.ball.x = 240;
-            this.ball.y = 270;
-            this.ball.dy > 0 ? this.ball.dy = -2 : this.ball.dy = 2;
+            this.ball.reset();
         }
-    }
-
-    reflectBallOnPaddle() {
-        this.ball.dy *= -1;
-        this.ball.dy > 0 ? this.ball.dy += 0.5 : this.ball.dy -= 0.5;
     }
 
     reset() {
         this.scoreBlue = 0;
         this.scoreRed = 0;
-        this.ball.x = 240;
-        this.ball.y = 270;
-        this.ball.dy = -2;
+        this.ball.reset();
         this.isGameOver = false;
         this.isPauseOn = false;
     }
