@@ -22,7 +22,7 @@ server.listen(POST, () => {
 
 ////Game
 //import Room class
-const Room = require("./server/room.js");
+const Room = require("./server/Room.js");
 const { exit } = require('process');
 const rooms = new Map([
   ['room01', new Room('room01')],

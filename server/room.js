@@ -1,30 +1,11 @@
 const Ball = require("./Ball.js");
+const Player = require("./Player.js");
 
 const PADDLE_HEIGHT = 10;
 const PADDLE_WIDTH = 65;
 const SWIPE_SPACE_HEIGHT = 50;
-
-class Player {
-    // paddlePosX: number. initial x-coordinate of the paddle
-    constructor(paddlePosX, paddlePosY) {
-        this.isAvailable = true;
-        this.isRightPressed = false;
-        this.isLeftPressed = false;
-        this.paddle = new Paddle(paddlePosX, paddlePosY);
-        this.touchState = {
-            isTouchOnPaddle: false
-        }
-    }
-}
-
-class Paddle {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.height = PADDLE_HEIGHT;
-        this.width = PADDLE_WIDTH;
-    }
-}
+const CANVAS_WIDTH = 360;
+const CANVAS_HEIGHT = 480;
 
 class Room {
     constructor(name) {
@@ -32,16 +13,13 @@ class Room {
         this.name = name;
         this.scoreBlue = 0;
         this.scoreRed = 0;
-        //canvas & score
-        this.canvasWidth = 360;
-        this.canvasHeight = 480;
         //ball
         this.ball = new Ball();
         //players
         this.players = {
-            'Player1': new Player(90, this.canvasHeight - PADDLE_HEIGHT - SWIPE_SPACE_HEIGHT),
+            'Player1': new Player(90, CANVAS_HEIGHT - PADDLE_HEIGHT - SWIPE_SPACE_HEIGHT),
             'Player2': new Player(90, SWIPE_SPACE_HEIGHT),
-            'Player3': new Player(205, this.canvasHeight - PADDLE_HEIGHT - SWIPE_SPACE_HEIGHT),
+            'Player3': new Player(205, CANVAS_HEIGHT - PADDLE_HEIGHT - SWIPE_SPACE_HEIGHT),
             'Player4': new Player(205, SWIPE_SPACE_HEIGHT)
         }
         // margin to detect if touch is on the paddle
@@ -65,7 +43,7 @@ class Room {
     // calculate paddle position based on key input. Key handling occurs in server.js
     calcNextPaddlePositions() {
         Object.keys(this.players).forEach(n => {
-            if (this.players[n].isRightPressed && this.players[n].paddle.x < this.canvasWidth - this.players[n].paddle.width) {
+            if (this.players[n].isRightPressed && this.players[n].paddle.x < CANVAS_WIDTH - this.players[n].paddle.width) {
                 this.players[n].paddle.x += 5;
             } else if (this.players[n].isLeftPressed && this.players[n].paddle.x > 0) {
                 this.players[n].paddle.x -= 5;
@@ -119,20 +97,10 @@ class Room {
         }
     }
 
-    judgeIfGoal() {
-        if (this.isBallPassingUpperEdge()) {
-            this.scoreBlue += 1;
-            this.processAfterScore();
-        } else if (this.isBallPassingLowerEdge()) {
-            this.scoreRed += 1;
-            this.processAfterScore();
-        }
-    }
-
     restrictPosXInCanvas(x, paddle) {
         if (x < 0) return 0;
-        if (x > this.canvasWidth - paddle.width)
-            return this.canvasWidth - paddle.width;
+        if (x > CANVAS_WIDTH - paddle.width)
+            return CANVAS_WIDTH - paddle.width;
         return x;
     }
 
@@ -144,7 +112,7 @@ class Room {
     }
 
     isBallHitSideWall() {
-        if (this.ball.x + this.ball.dx > this.canvasWidth - this.ball.radius || this.ball.x + this.ball.dx < this.ball.radius) return true;
+        if (this.ball.x + this.ball.dx > CANVAS_WIDTH - this.ball.radius || this.ball.x + this.ball.dx < this.ball.radius) return true;
         else return false;
     }
 
@@ -154,7 +122,7 @@ class Room {
     }
 
     isBallPassingLowerEdge() {
-        if (this.ball.y + this.ball.dy > this.canvasHeight - this.ball.radius - SWIPE_SPACE_HEIGHT) return true;
+        if (this.ball.y + this.ball.dy > CANVAS_HEIGHT - this.ball.radius - SWIPE_SPACE_HEIGHT) return true;
         else return false;
     }
 
