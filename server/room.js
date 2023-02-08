@@ -24,6 +24,17 @@ class Paddle {
     }
 }
 
+class Ball {
+    constructor() {
+        this.radius = 10;
+        this.x = 240 //initial x-coordinate. canvasWidth/2;
+        this.y = 270 //initial y-coordiante. canvasHeight/2;
+        this.dx = 1; // how many pixels to move by a rendering
+        this.dy = -1;
+        this.height = this.radius * 2;
+    }
+}
+
 class Room {
     constructor(name) {
         // TODO: name is used only in a server.js's gameStateWatcher. Research and delete this var if possible.
@@ -34,12 +45,7 @@ class Room {
         this.canvasWidth = 360;
         this.canvasHeight = 480;
         //ball
-        this.ballRadius = 10;
-        this.ballX = 240 //initial x-coordinate. canvasWidth/2;
-        this.ballY = 270 //initial y-coordiante. canvasHeight/2;
-        this.balldx = 1; // how many pixels to move by a rendering
-        this.balldy = -1;
-        this.ballHeight = this.ballRadius * 2;
+        this.ball = new Ball();
         //players
         this.players = {
             'Player1': new Player(90, this.canvasHeight - PADDLE_HEIGHT - SWIPE_SPACE_HEIGHT),
@@ -78,7 +84,7 @@ class Room {
 
     calcNextBallPosition() {
         if (!this.isGameStarted || this.isGameOver) return;
-        if (this.isBallHitSideWall()) this.balldx *= -1;
+        if (this.isBallHitSideWall()) this.ball.dx *= -1;
 
         // if ball hit paddle
         if (this.isBallHitUpperPaddle(this.players.Player2) || this.isBallHitUpperPaddle(this.players.Player4) ||
@@ -93,8 +99,8 @@ class Room {
         }
 
         // finally block. ball moves always a little bit
-        this.ballX += this.balldx;
-        this.ballY += this.balldy;
+        this.ball.x += this.ball.dx;
+        this.ball.y += this.ball.dy;
     }
 
     onHandleTouch(playerNumber, posX, when) {
@@ -123,6 +129,16 @@ class Room {
         }
     }
 
+    judgeIfGoal() {
+        if (this.isBallPassingUpperEdge()) {
+            this.scoreBlue += 1;
+            this.processAfterScore();
+        } else if (this.isBallPassingLowerEdge()) {
+            this.scoreRed += 1;
+            this.processAfterScore();
+        }
+    }
+
     restrictPosXInCanvas(x, paddle) {
         if (x < 0) return 0;
         if (x > this.canvasWidth - paddle.width)
@@ -138,57 +154,57 @@ class Room {
     }
 
     isBallHitSideWall() {
-        if (this.ballX + this.balldx > this.canvasWidth - this.ballRadius || this.ballX + this.balldx < this.ballRadius) return true;
+        if (this.ball.x + this.ball.dx > this.canvasWidth - this.ball.radius || this.ball.x + this.ball.dx < this.ball.radius) return true;
         else return false;
     }
 
     isBallPassingUpperEdge() {
-        if (this.ballY + this.balldy < SWIPE_SPACE_HEIGHT) return true;
+        if (this.ball.y + this.ball.dy < SWIPE_SPACE_HEIGHT) return true;
         else return false;
     }
 
     isBallPassingLowerEdge() {
-        if (this.ballY + this.balldy > this.canvasHeight - this.ballRadius - SWIPE_SPACE_HEIGHT) return true;
+        if (this.ball.y + this.ball.dy > this.canvasHeight - this.ball.radius - SWIPE_SPACE_HEIGHT) return true;
         else return false;
     }
 
     isBallHitUpperPaddle(player) {
         const paddle = player.paddle;
-        if (this.ballX > paddle.x && this.ballX < paddle.x + paddle.width &&
-            paddle.y < this.ballY && this.ballY < paddle.y + paddle.height) return true;
+        if (this.ball.x > paddle.x && this.ball.x < paddle.x + paddle.width &&
+            paddle.y < this.ball.y && this.ball.y < paddle.y + paddle.height) return true;
         else return false;
     }
 
     isBallHitLowerPaddle(player) {
         const paddle = player.paddle;
-        if (this.ballX > paddle.x && this.ballX < paddle.x + paddle.width &&
-            paddle.y < this.ballY + this.ballHeight && paddle.y + paddle.height < this.ballY + this.ballHeight) return true;
+        if (this.ball.x > paddle.x && this.ball.x < paddle.x + paddle.width &&
+            paddle.y < this.ball.y + this.ball.height && paddle.y + paddle.height < this.ball.y + this.ball.height) return true;
         else return false;
     }
 
     // Judge if a team got 3 points. If so, turn on isGameOver. 
     processAfterScore() {
-        if (this.scoreBlue == 3 || this.scoreRed == 3) {
+        if (this.scoreBlue === 3 || this.scoreRed === 3) {
             this.isGameOver = true;
         }
         else {
-            this.ballX = 240;
-            this.ballY = 270;
-            this.balldy > 0 ? this.balldy = -2 : this.balldy = 2;
+            this.ball.x = 240;
+            this.ball.y = 270;
+            this.ball.dy > 0 ? this.ball.dy = -2 : this.ball.dy = 2;
         }
     }
 
     reflectBallOnPaddle() {
-        this.balldy *= -1;
-        this.balldy > 0 ? this.balldy += 0.5 : this.balldy -= 0.5;
+        this.ball.dy *= -1;
+        this.ball.dy > 0 ? this.ball.dy += 0.5 : this.ball.dy -= 0.5;
     }
 
     reset() {
         this.scoreBlue = 0;
         this.scoreRed = 0;
-        this.ballX = 240;
-        this.ballY = 270;
-        this.balldy = -2;
+        this.ball.x = 240;
+        this.ball.y = 270;
+        this.ball.dy = -2;
         this.isGameOver = false;
         this.isPauseOn = false;
     }

@@ -89,8 +89,8 @@ io.on('connection', (socket) => {
   socket.on("getWhatToRender", (data) => {
     io.to(roomId).emit("setWhatToRender",
       {
-        ballX: room.ballX,
-        ballY: room.ballY,
+        ballX: room.ball.x,
+        ballY: room.ball.y,
         player1PaddleX: room.players.Player1.paddle.x,
         player1PaddleY: room.players.Player1.paddle.y,
         player2PaddleX: room.players.Player2.paddle.x,
