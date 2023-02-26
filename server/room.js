@@ -111,7 +111,8 @@ class Room {
     }
 
     isBallHitSideWall() {
-        if (this.ball.x + this.ball.dx > CANVAS_WIDTH - this.ball.radius || this.ball.x + this.ball.dx < this.ball.radius) return true;
+        if (this.ball.getLeftX() <= 0 ||
+            this.ball.getRightX() >= CANVAS_WIDTH) return true;
         else return false;
     }
 
@@ -121,21 +122,28 @@ class Room {
     }
 
     isBallPassingLowerEdge() {
-        if (this.ball.y > CANVAS_HEIGHT - SWIPE_SPACE_HEIGHT) return true;
+        if (this.ball.getTopY() > CANVAS_HEIGHT - SWIPE_SPACE_HEIGHT) return true;
         else return false;
     }
 
     isBallHitUpperPaddle(player) {
         const paddle = player.paddle;
-        if (this.ball.x > paddle.x && this.ball.x < paddle.x + paddle.width &&
-            paddle.y < this.ball.y && this.ball.y < paddle.y + paddle.height) return true;
+        if (this.isBallIntersectPaddleOverXaxis(player) &&
+            paddle.y <= this.ball.getTopY() && this.ball.getTopY() <= paddle.getBottomY()) return true;
         else return false;
     }
 
     isBallHitLowerPaddle(player) {
         const paddle = player.paddle;
-        if (this.ball.x > paddle.x && this.ball.x < paddle.getRightX() &&
-            paddle.y < this.ball.getBottomY() && paddle.y + paddle.height < this.ball.getBottomY()) return true;
+        if (this.isBallIntersectPaddleOverXaxis(player) &&
+            paddle.y <= this.ball.getBottomY() && this.ball.getBottomY() <= paddle.getBottomY()) return true;
+        else return false;
+    }
+
+    isBallIntersectPaddleOverXaxis(player) {
+        const paddle = player.paddle;
+        if (paddle.x <= this.ball.getLeftX() && this.ball.getLeftX() <= paddle.getRightX()) return true;
+        else if (paddle.x <= this.ball.getRightX() && this.ball.getRightX() <= paddle.getRightX()) return true;
         else return false;
     }
 

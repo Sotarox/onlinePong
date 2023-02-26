@@ -1,8 +1,8 @@
 class Ball {
     constructor() {
         this.radius = 10;
-        this.x = 240 //initial x-coordinate. canvasWidth/2;
-        this.y = 270 //initial y-coordiante. canvasHeight/2;
+        this.x = 240 //center of circle. initial x-coordinate == canvasWidth/2;
+        this.y = 270 //center of circle. initial y-coordiante == canvasHeight/2;
         this.dx = 1; // how many pixels to move by a rendering
         this.dy = -1;
         this.height = this.radius * 2;
@@ -26,11 +26,17 @@ class Ball {
         this.y = 270;
         this.dy > 0 ? this.dy = 2 : this.dy = -2;
     }
+    getLeftX(){
+        return this.x - this.radius;
+    }
     getRightX(){
-        return this.x + this.width;
+        return this.x + this.radius;
+    }
+    getTopY(){
+        return this.y - this.radius;
     }
     getBottomY(){
-        return this.y + this.height;
+        return this.y + this.radius;
     }
 }
 module.exports = Ball;
