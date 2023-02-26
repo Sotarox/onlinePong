@@ -6,6 +6,7 @@ class Ball {
         this.dx = 1; // how many pixels to move by a rendering
         this.dy = -1;
         this.height = this.radius * 2;
+        this.width = this.radius * 2;
     }
     move() {
         this.x += this.dx;
@@ -24,6 +25,12 @@ class Ball {
         this.x = 240;
         this.y = 270;
         this.dy > 0 ? this.dy = 2 : this.dy = -2;
+    }
+    getRightX(){
+        return this.x + this.width;
+    }
+    getBottomY(){
+        return this.y + this.height;
     }
 }
 module.exports = Ball;

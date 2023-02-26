@@ -58,7 +58,6 @@ class Room {
         // if ball hit paddle
         if (this.isBallHitUpperPaddle(this.players.Player2) || this.isBallHitUpperPaddle(this.players.Player4) ||
             this.isBallHitLowerPaddle(this.players.Player1) || this.isBallHitLowerPaddle(this.players.Player3)) {
-            // this.reflectBallOnPaddle();
             this.ball.reflectVertical();
         } else if (this.isBallPassingUpperEdge()) {
             this.scoreBlue += 1;
@@ -117,12 +116,12 @@ class Room {
     }
 
     isBallPassingUpperEdge() {
-        if (this.ball.y + this.ball.dy < SWIPE_SPACE_HEIGHT) return true;
+        if (this.ball.getBottomY() < SWIPE_SPACE_HEIGHT) return true;
         else return false;
     }
 
     isBallPassingLowerEdge() {
-        if (this.ball.y + this.ball.dy > CANVAS_HEIGHT - this.ball.radius - SWIPE_SPACE_HEIGHT) return true;
+        if (this.ball.y > CANVAS_HEIGHT - SWIPE_SPACE_HEIGHT) return true;
         else return false;
     }
 
@@ -135,8 +134,8 @@ class Room {
 
     isBallHitLowerPaddle(player) {
         const paddle = player.paddle;
-        if (this.ball.x > paddle.x && this.ball.x < paddle.x + paddle.width &&
-            paddle.y < this.ball.y + this.ball.height && paddle.y + paddle.height < this.ball.y + this.ball.height) return true;
+        if (this.ball.x > paddle.x && this.ball.x < paddle.getRightX() &&
+            paddle.y < this.ball.getBottomY() && paddle.y + paddle.height < this.ball.getBottomY()) return true;
         else return false;
     }
 
