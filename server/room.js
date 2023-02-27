@@ -44,10 +44,10 @@ class Room {
     // calculate paddle position based on key input. Key handling occurs in server.js
     calcNextPaddlePositions() {
         Object.keys(this.players).forEach(n => {
-            if (this.players[n].isRightPressed && this.players[n].paddle.x < CANVAS_WIDTH - this.players[n].paddle.width) {
-                this.players[n].paddle.x += 5;
-            } else if (this.players[n].isLeftPressed && this.players[n].paddle.x > 0) {
-                this.players[n].paddle.x -= 5;
+            if (this.players[n].isRightPressed && this.players[n].paddle.getLeftX() < CANVAS_WIDTH - this.players[n].paddle.width) {
+                this.players[n].paddle.moveHorizontal(5);
+            } else if (this.players[n].isLeftPressed && this.players[n].paddle.getLeftX() > 0) {
+                this.players[n].paddle.moveHorizontal(-5);
             }
         });
     }
@@ -55,7 +55,6 @@ class Room {
     calcNextBallPosition() {
         if (!this.isGameStarted || this.isGameOver) return;
         if (this.isBallHitSideWall()) this.ball.reflectHorizontal();
-        // if ball hit paddle
         if (this.isBallHitUpperPaddle(this.players.Player2) || this.isBallHitUpperPaddle(this.players.Player4) ||
             this.isBallHitLowerPaddle(this.players.Player1) || this.isBallHitLowerPaddle(this.players.Player3)) {
             this.ball.reflectVertical();
@@ -82,13 +81,13 @@ class Room {
                 state.isTouchOnPaddle = this.judgeIsTouchOnPaddle(posX, paddle);
                 console.log("Room: On, isTouchOnPaddle:", state.isTouchOnPaddle)
                 if (state.isTouchOnPaddle) {
-                    paddle.x = this.restrictPosXInCanvas(posX, paddle);
+                    paddle.moveToAbsoluteX(this.restrictPosXInCanvas(posX, paddle));
                 }
                 break;
             case "move":
                 console.log("Room: Move, isTouchOnPaddle:", state.isTouchOnPaddle);
                 if (state.isTouchOnPaddle) {
-                    paddle.x = this.restrictPosXInCanvas(posX, paddle);
+                    paddle.moveToAbsoluteX(this.restrictPosXInCanvas(posX, paddle));
                 }
                 break;
             case "off":
@@ -100,18 +99,18 @@ class Room {
         }
     }
 
-    restrictPosXInCanvas(x, paddle) {
-        if (x < 0) return 0;
-        if (x > CANVAS_WIDTH - paddle.width)
+    restrictPosXInCanvas(newPaddleLeftXpos, paddle) {
+        if (newPaddleLeftXpos < 0) return 0;
+        if (newPaddleLeftXpos > CANVAS_WIDTH - paddle.width)
             return CANVAS_WIDTH - paddle.width;
-        return x;
+        return newPaddleLeftXpos;
     }
 
     // Y axis is currently not used for detection
     judgeIsTouchOnPaddle(touchX, paddle) {
         const marginWidth = this.touchHandle.marginPaddleWidth;
-        return paddle.x - marginWidth < touchX &&
-            touchX < paddle.x + paddle.width + marginWidth;
+        return paddle.getLeftX() - marginWidth < touchX &&
+            touchX < paddle.getLeftX() + paddle.width + marginWidth;
     }
 
     isBallHitSideWall() {
@@ -133,21 +132,21 @@ class Room {
     isBallHitUpperPaddle(player) {
         const paddle = player.paddle;
         if (this.isBallIntersectPaddleOverXaxis(player) &&
-            paddle.y <= this.ball.getTopY() && this.ball.getTopY() <= paddle.getBottomY()) return true;
+            paddle.getTopY() <= this.ball.getTopY() && this.ball.getTopY() <= paddle.getBottomY()) return true;
         else return false;
     }
 
     isBallHitLowerPaddle(player) {
         const paddle = player.paddle;
         if (this.isBallIntersectPaddleOverXaxis(player) &&
-            paddle.y <= this.ball.getBottomY() && this.ball.getBottomY() <= paddle.getBottomY()) return true;
+            paddle.getTopY() <= this.ball.getBottomY() && this.ball.getBottomY() <= paddle.getBottomY()) return true;
         else return false;
     }
 
     isBallIntersectPaddleOverXaxis(player) {
         const paddle = player.paddle;
-        if (paddle.x <= this.ball.getLeftX() && this.ball.getLeftX() <= paddle.getRightX()) return true;
-        else if (paddle.x <= this.ball.getRightX() && this.ball.getRightX() <= paddle.getRightX()) return true;
+        if (paddle.getLeftX() <= this.ball.getLeftX() && this.ball.getLeftX() <= paddle.getRightX()) return true;
+        else if (paddle.getLeftX() <= this.ball.getRightX() && this.ball.getRightX() <= paddle.getRightX()) return true;
         else return false;
     }
 
