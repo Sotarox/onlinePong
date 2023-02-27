@@ -38,6 +38,7 @@ class Room {
         if (this.isPauseOn) return;
         this.calcNextPaddlePositions();
         this.calcNextBallPosition();
+        this.judgeIsGoal();
     }
 
     // calculate paddle position based on key input. Key handling occurs in server.js
@@ -54,20 +55,23 @@ class Room {
     calcNextBallPosition() {
         if (!this.isGameStarted || this.isGameOver) return;
         if (this.isBallHitSideWall()) this.ball.reflectHorizontal();
-
         // if ball hit paddle
         if (this.isBallHitUpperPaddle(this.players.Player2) || this.isBallHitUpperPaddle(this.players.Player4) ||
             this.isBallHitLowerPaddle(this.players.Player1) || this.isBallHitLowerPaddle(this.players.Player3)) {
             this.ball.reflectVertical();
-        } else if (this.isBallPassingUpperEdge()) {
+        }
+        this.ball.move();
+    }
+
+    judgeIsGoal(){
+        if (!this.isGameStarted || this.isGameOver) return;
+        if (this.isBallPassingUpperEdge()) {
             this.scoreBlue += 1;
             this.processAfterScore();
         } else if (this.isBallPassingLowerEdge()) {
             this.scoreRed += 1;
             this.processAfterScore();
         }
-
-        this.ball.move();
     }
 
     onHandleTouch(playerNumber, posX, when) {
@@ -149,7 +153,7 @@ class Room {
 
     // Judge if a team got 3 points. If so, turn on isGameOver. 
     processAfterScore() {
-        if (this.scoreBlue === 3 || this.scoreRed === 3) this.isGameOver = true;
+        if (this.scoreBlue >= 3 || this.scoreRed >= 3) this.isGameOver = true;
         else this.ball.reset();
     }
 
