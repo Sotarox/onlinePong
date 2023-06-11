@@ -18,13 +18,12 @@ function drawPaddle(paddle) {
 
 function drawGoalLines() {
     const ctx = document.getElementById('canvas').getContext('2d');
-    // Lower line (P1 & P3)
-    ctx.beginPath();
+    // Upper line (P2 & P4)    ctx.beginPath();
     ctx.rect(0, 0, 360, 50);
     ctx.fillStyle = COLORS.LINE_GRAY;
     ctx.fill();
     ctx.closePath();
-    // Upper line (P2 & P4)
+    // Lower line (P1 & P3)
     ctx.beginPath();
     ctx.rect(0, 430, 360, 480);
     ctx.fillStyle = COLORS.LINE_GRAY;
@@ -90,8 +89,8 @@ function render() {
         isPauseOn = data.isPauseOn;
     });
     drawCanvasMessage(canvasMessage);
-    drawGoalLines();
     if (isGameStarted && !isGameOver) drawBall(ball1);
+    drawGoalLines();
     drawPaddle(paddle1);
     drawPaddle(paddle2);
     drawPaddle(paddle3);
