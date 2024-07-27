@@ -2,7 +2,7 @@
 
 ## Web application demo
 https://onlinepong.herokuapp.com  
-- Choose a room and play pong game.
+- Select a room and play pong game.
 - Players in the same room can play and chat together.
 - Press `<-` and `->` keys in keyboard to move your paddle.
 - Smartphone and Tablet are currently not supported.
