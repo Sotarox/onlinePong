@@ -1,4 +1,7 @@
 # 4 players online pong
+- Prototype web application for multiplayer online game
+- Server is NodeJs and express. Real time communication(chat, game) is realized by socket.io.
+- This is created for university assignment in 2nd semeseter. 
 
 ## Web application demo
 ~~https://onlinepong.herokuapp.com~~ 
